@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+*.log
+.DS_Store
+.claude
+.env
+.env.local
+.vscode
+.idea
+*.tgz
+.vitest
+.next
+**/tailwind/_config.css
