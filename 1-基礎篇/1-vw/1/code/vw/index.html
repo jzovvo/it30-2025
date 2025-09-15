@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 200dvh;
+    }
+
+    .box {
+      font-size: 5vw;
+      width: 50vw;
+    }
+
+    .info {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">hi :)</div>
+  <div class="info"></div>
+  <script>
+    const domInfo = document.querySelector('.info')
+    const domBox = document.querySelector('.box')
+
+    const updateInfo = () => {
+      const style = getComputedStyle(domBox)
+      const fontSize = style.fontSize
+      const boxWidth = style.width
+      const viewportWidth = window.innerWidth
+
+      domInfo.innerHTML = `
+        <b>viewport width: ${viewportWidth}</b>
+        <p>
+          <b>font-size: ${fontSize}</b><br/>
+          (5 / 100) * ${viewportWidth} = ${5 / 100 * viewportWidth}
+        </p>
+        <p>
+          <b>width: ${boxWidth}</b><br/>
+           (50 / 100) * ${viewportWidth} = ${50 / 100 * viewportWidth}
+        </p>
+      `
+    }
+
+    window.addEventListener('resize', updateInfo)
+    window.addEventListener('DOMContentLoaded', updateInfo)
+  </script>
+</body>
+</html>
