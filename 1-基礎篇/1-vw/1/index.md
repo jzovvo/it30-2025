@@ -13,52 +13,52 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-      body {
-        background-color: #041c29;
-        color: white;
-      }
+    body {
+      background-color: #041C29;
+      color: white;
+    }
 
-      .parent {
-        position: relative;
-        bottom: 0;
-        width: 30%;
-        height: 300px;
-        background-color: #e79c30;
-      }
+    .parent {
+      position: relative;
+      bottom: 0;
+      width: 30%;
+      height: 300px;
+      background-color: #E79C30;
+    }
 
-      .child {
-        width: 50%;
-        height: 100px;
-        bottom: 0;
-      }
+    .child {
+      width: 50%;
+      height: 100px;
+      bottom: 0;
+    }
 
-      .absolute {
-        position: absolute;
-        background-color: #a44542;
-      }
+    .absolute {
+      position: absolute;
+      background-color: #A44542;
+    }
 
-      .fixed {
-        position: fixed;
-        background-color: #3e5b6d;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="parent">
-      parent
-      <div class="child absolute">absolute</div>
-      <div class="child fixed">fixed</div>
-    </div>
-  </body>
+    .fixed {
+      position: fixed;
+      background-color: #3E5B6D;
+    }
+  </style>
+</head>
+<body>
+  <div class="parent">
+    parent
+    <div class="child absolute">absolute</div>
+    <div class="child fixed">fixed</div>
+  </div>
+</body>
 </html>
 ```
 
@@ -77,59 +77,59 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-      body {
-        height: 200dvh;
-      }
+    body {
+      height: 200dvh;
+    }
 
-      .box {
-        font-size: 5vw;
-        width: 50vw;
-      }
+    .box {
+      font-size: 5vw;
+      width: 50vw;
+    }
 
-      .info {
-        font-size: 14px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="box">hi :)</div>
-    <div class="info"></div>
-    <script>
-      const domInfo = document.querySelector(".info");
-      const domBox = document.querySelector(".box");
+    .info {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">hi :)</div>
+  <div class="info"></div>
+  <script>
+    const domInfo = document.querySelector('.info')
+    const domBox = document.querySelector('.box')
 
-      const updateInfo = () => {
-        const style = getComputedStyle(domBox);
-        const fontSize = style.fontSize;
-        const boxWidth = style.width;
-        const viewportWidth = window.innerWidth;
+    const updateInfo = () => {
+      const style = getComputedStyle(domBox)
+      const fontSize = style.fontSize
+      const boxWidth = style.width
+      const viewportWidth = window.innerWidth
 
-        domInfo.innerHTML = `
+      domInfo.innerHTML = `
         <b>viewport width: ${viewportWidth}</b>
         <p>
           <b>font-size: ${fontSize}</b><br/>
-          (5 / 100) * ${viewportWidth} = ${(5 / 100) * viewportWidth}
+          (5 / 100) * ${viewportWidth} = ${5 / 100 * viewportWidth}
         </p>
         <p>
           <b>width: ${boxWidth}</b><br/>
-           (50 / 100) * ${viewportWidth} = ${(50 / 100) * viewportWidth}
+           (50 / 100) * ${viewportWidth} = ${50 / 100 * viewportWidth}
         </p>
-      `;
-      };
+      `
+    }
 
-      window.addEventListener("resize", updateInfo);
-      window.addEventListener("DOMContentLoaded", updateInfo);
-    </script>
-  </body>
+    window.addEventListener('resize', updateInfo)
+    window.addEventListener('DOMContentLoaded', updateInfo)
+  </script>
+</body>
 </html>
 ```
 
@@ -157,43 +157,43 @@
 
 上面會不斷強調 `vw` 與 `fixed + %` **只是類似**是因為：CSS 的 `%` 本質上是基於可排版空間的比例，而視窗如果遇到佔位滾動條，那剩餘的可排版空間其實就沒有整個視窗那麼大，而 `vw` 本質上完全就是視窗的比例，兩者基於的數值其實不太一樣。
 
-**測試程式碼**
+**程式碼**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        border: 0;
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
 
-      body {
-        height: 200dvh;
-      }
+    body {
+      height: 200dvh;
+    }
 
-      .w-full {
-        width: 100%;
-      }
+    .w-full {
+      width: 100%;
+    }
 
-      .w-screen {
-        width: 100vw;
-      }
+    .w-screen {
+      width: 100vw;
+    }
 
-      .box {
-        border: 2px solid black;
-      }
-    </style>
-    <div class="w-full box">100%</div>
-    <div class="w-screen box">100vw</div>
-  </body>
+    .box {
+      border: 2px solid black;
+    }
+  </style>
+  <div class="w-full box">100%</div>
+  <div class="w-screen box">100vw</div>
+</body>
 </html>
 ```
 
