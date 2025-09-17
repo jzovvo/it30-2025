@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* 錯誤示範: + 或 - 兩邊沒有空格 */
+    .x1 {
+      font-size: calc(100px-2px*20);
+    }
+
+    /* 錯誤示範: calc 與 () 之間多了空格 */
+    .x2 {
+      font-size: calc (100px - 2px*20);
+    }
+
+    /* 正確示範: + or - 兩邊一定要有空格 */
+    .o1 {
+      font-size: calc(100px - 2px*20);
+      /* 標準寫法 font-size: calc(100px - 2px * 20); */
+    }
+
+    /* 正確示範: () 裡面換行隨便你 */
+    .o2 {
+      font-size: calc(
+        100px
+        -
+        2px *
+        20
+      );
+    }
+  </style>
+</head>
+<body>
+  <div class="x1">x1</div>
+  <div class="x2">x2</div>
+  <div class="o1">o1</div>
+  <div class="o2">o2</div>
+</body>
+</html>

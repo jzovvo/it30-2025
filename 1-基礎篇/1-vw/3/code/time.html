@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @keyframes bg {
+      0% {
+        background-color:cadetblue;
+      }
+      100% {
+        background-color:chocolate;
+      }
+    }
+
+    .o {
+      animation: bg calc(.5s * 2) infinite alternate;
+      letter-spacing: calc(5px * 5vw);
+    }
+
+    .x {
+      animation: bg calc(.5s + 1) infinite alternate;
+      letter-spacing: calc(5px + 5vw);
+    }
+  </style>
+</head>
+<body>
+  <div class="o">hi :)</div>
+  <div class="x">hi :)</div>
+</body>
+</html>
