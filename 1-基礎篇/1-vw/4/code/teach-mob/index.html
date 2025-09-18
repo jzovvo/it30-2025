@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: calc(50 / 1440 * 100vw) 0;
+    }
+
+    .txt {
+      font-size: calc(28 / 1440 * 100vw);
+    }
+
+    .box {
+      width: calc(690 / 1440 * 100vw);
+      margin: auto;
+      background: orange;
+    }
+
+    #info {
+      width: max-content;
+      margin: auto;
+    }
+
+    @media (width < 768px) {
+      body {
+        padding: calc(30 / 375 * 100vw) 0;
+      }
+
+      .txt {
+        font-size: calc(14 / 375 * 100vw);
+      }
+
+      .box {
+        width: calc(335 / 375 * 100vw);
+      }
+    }
+    </style>
+</head>
+<body>
+  <div class="txt box">一堆字</div>
+
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domBox = document.querySelector('.box')
+
+    const updateInfo = () => {
+      const style = getComputedStyle(domBox)
+      const fontSize = style.fontSize
+      const boxWidth = style.width
+      const bodyPadding = getComputedStyle(document.body).padding
+
+      domInfo.innerHTML = `
+        <p>body padding: ${bodyPadding}</p>
+        <p>box font-size: ${fontSize}</p>
+        <p>box width: ${boxWidth}</p>
+      `
+    }
+
+    window.addEventListener('resize', updateInfo)
+    updateInfo()
+  </script>
+</body>
+</html>
