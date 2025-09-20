@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Sixtyfour+Convergence:BLED,SCAN@0..100,-53..100&display=swap" rel="stylesheet">
+  <style>
+    @keyframes scan {
+      0% {
+        font-variation-settings: "SCAN" 0;
+      }
+      100% {
+        font-variation-settings: "SCAN" 100;
+      }
+    }
+
+    @keyframes bled {
+      0% {
+        font-variation-settings: "BLED" 0;
+      }
+      100% {
+        font-variation-settings: "BLED" 100;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Sixtyfour Convergence", sans-serif;
+      padding: 20px;
+      font-size: 100px;
+    }
+
+    .scan {
+      animation: scan 1s infinite alternate;
+    }
+
+    .bled {
+      animation: bled 1s infinite alternate;
+    }
+  </style>
+</head>
+<body>
+  <div class="scan">scan</div>
+  <div class="bled">bled</div>
+</body>
+</html>

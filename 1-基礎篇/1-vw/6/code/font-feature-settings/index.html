@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-feature-settings: normal;
+    }
+
+    body {
+      font-family: "Inter", serif;
+      padding: 10px;
+    }
+
+    /* 等寬數字 */
+    .tnum-on { font-feature-settings: "tnum" 1; }
+    .tnum-off { font-feature-settings: "tnum" 0; }
+
+    /* 分數 */
+    .frac-on { font-feature-settings: "frac" 1; }
+    .frac-off { font-feature-settings: "frac" 0; }
+  </style>
+</head>
+<body>
+  <div class="tnum-on">12345 - 等寬數字/開</div>
+  <div class="tnum-off">12345 - 等寬數字/關</div>
+  <div class="frac-on">1/2 - 分數/開</div>
+  <div class="frac-off">1/2 - 分數/關</div>
+</body>
+</html>

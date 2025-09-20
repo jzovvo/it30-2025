@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Piazzolla:ital,opsz,wght@0,8..30,100..900;1,8..30,100..900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    body {
+      font-family: 'Piazzolla', sans-serif;
+    }
+
+    span {
+      background-color: skyblue;
+    }
+
+    .box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .text20 {
+      font-size: 20px;
+    }
+
+    .text50 {
+      font-size: 50px;
+    }
+
+    .opsz-auto {
+      font-optical-sizing: auto;
+    }
+
+    .opsz-none {
+      font-optical-sizing: none;
+    }
+
+    @keyframes opsz {
+      0% {
+        font-variation-settings: 'opsz' 8;
+      }
+      100% {
+        font-variation-settings: 'opsz' 30;
+      }
+    }
+
+    .animate-opsz {
+      animation: opsz 1s linear infinite alternate;
+    }
+  </style>
+</head>
+<body>
+  <div class="text20 box">
+    <div><span class="animate-opsz">20px</span></div>
+    <div><span class="opsz-auto">20px</span> - auto</div>
+    <div><span class="opsz-none">20px</span> - none</div>
+  </div>
+
+  <div class="text50 box">
+    <div><span class="animate-opsz">50px</span></div>
+    <div><span class="opsz-auto">50px</span> - auto</div>
+    <div><span class="opsz-none">50px</span> - none</div>
+  </div>
+</body>
+</html>
+
+
+
