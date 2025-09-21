@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .box {
+      /* 寬度要是 50%，但是不能小於 50px，也不能大於 100px */
+      width: clamp(50px, 50%, 100px);
+      background-color: cadetblue;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">hi:)</div>
+</body>
+</html>
