@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .vwMin {
+      font-size: min(50px, calc(50 / 375 * 100vw)); /* calc() 可以省略 */
+    }
+    .vw {
+      font-size: calc(50 / 375 * 100vw);
+    }
+  </style>
+</head>
+<body>
+  <div class="vwMin">
+  vw min
+  </div>
+  <div class="vw">
+  vw
+  </div>
+
+  <!-- 下面這些方便觀察而已 -->
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domVwMin = document.querySelector('.vwMin')
+    const domVw = document.querySelector('.vw')
+
+    const updateInfo = () => {
+      const vwMinFontSize = getComputedStyle(domVwMin).fontSize
+      const vwFontSize = getComputedStyle(domVw).fontSize
+
+      domInfo.innerHTML = `
+        vwMin: ${vwMinFontSize}<br/>
+        vw: ${vwFontSize}
+      `
+    }
+
+    window.addEventListener('resize', updateInfo)
+
+    updateInfo()
+  </script>
+</body>
+</html>

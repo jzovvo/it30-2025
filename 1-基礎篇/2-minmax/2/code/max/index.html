@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .box {
+      width: 100px;
+      margin: auto;
+      border: 1px solid black;
+    }
+
+    .vwMax {
+      width: max-content;
+      background-color: orange;
+      margin-left: max(-30px, calc(-30 / 375 * 100vw));
+    }
+
+    .vw {
+      width: max-content;
+      background-color: skyblue;
+      margin-left: calc(-30 / 375 * 100vw);
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="vwMax">
+      vw max
+    </div>
+    <div class="vw">
+    vw
+    </div>
+  </div>
+
+  <!-- 下面這些方便觀察而已 -->
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domVwMax = document.querySelector('.vwMax')
+    const domVw = document.querySelector('.vw')
+
+    const updateInfo = () => {
+      const vwMaxMarginLeft = getComputedStyle(domVwMax).marginLeft
+      const vwMarginLeft = getComputedStyle(domVw).marginLeft
+
+      domInfo.innerHTML = `
+        vwMax: ${vwMaxMarginLeft}<br/>
+        vw: ${vwMarginLeft}
+      `
+    }
+
+    window.addEventListener('resize', updateInfo)
+
+    updateInfo()
+  </script>
+</body>
+</html>
+
+
