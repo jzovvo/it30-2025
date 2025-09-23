@@ -1,0 +1,209 @@
+:root {
+  --color-red: #C22A29;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: black;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  color: white;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+/* layout */
+#app {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 100vw;
+  overflow: hidden;
+  padding: min(50px, calc(50 / 1440 * 100vw)) 0;
+}
+
+.container {
+  width: min(1340px, calc(1340 / 1440 * 100vw));
+  margin: auto;
+  display: flex;
+}
+
+.box1 {
+  margin-right: min(50px, calc(50 / 1440 * 100vw));
+}
+
+.box2 {
+  flex: 1;
+}
+
+@media (width < 768px) {
+  #app {
+    padding: min(30px, calc(30 / 375 * 100vw)) 0;
+  }
+
+  .container {
+    width: min(335px, calc(335 / 375 * 100vw));
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .box1 {
+    margin-right: 0;
+    margin-bottom: min(20px, calc(20 / 375 * 100vw));
+  }
+}
+
+/* album */
+.album {
+  width: max-content;
+  background: var(--color-red);
+  padding: min(50px, calc(50 / 1440 * 100vw));
+  margin-bottom: min(50px, calc(50 / 1440 * 100vw));
+}
+
+.album-inner {
+  position: relative;
+  width: min(500px, calc(500 / 1440 * 100vw));
+}
+
+.album-inner::after {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.album img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (width < 768px) {
+  .album {
+    padding: min(20px, calc(20 / 375 * 100vw));
+    margin-bottom: min(20px, calc(20 / 375 * 100vw));
+  }
+
+  .album-inner {
+    width: min(260px, calc(260 / 375 * 100vw));
+  }
+}
+
+/* info */
+.info-box {
+  padding-left: min(30px, calc(30 / 1440 * 100vw));
+}
+
+.square {
+  position: absolute;
+  top: 50%;
+  left: max(-10px, calc(-10 / 1440 * 100vw));
+  transform: translate3d(-100%,-50%,0);
+
+  width: min(20px, calc(20 / 1440 * 100vw));
+  height: min(20px, calc(20 / 1440 * 100vw));
+  background-color: var(--color-red);
+}
+
+.song {
+  position: relative;
+
+  font-size: min(40px, calc(40 / 1440 * 100vw));
+  font-weight: 700;
+}
+
+.singer {
+  font-size: min(32px, calc(32 / 1440 * 100vw));
+}
+
+@media (width < 768px) {
+  .info-box {
+    padding-left: min(20px, calc(20 / 375 * 100vw));
+  }
+
+  .square {
+    left: max(-10px, calc(-10 / 375 * 100vw));
+    width: min(10px, calc(10 / 375 * 100vw));
+    height: min(10px, calc(10 / 375 * 100vw));
+  }
+
+  .song {
+    font-size: min(25px, calc(25 / 375 * 100vw));
+  }
+
+  .singer {
+    font-size: min(18px, calc(18 / 375 * 100vw));
+  }
+}
+
+/* lyrics */
+.lyrics {
+  font-size: min(28px, calc(28 / 1440 * 100vw));
+}
+
+@media (width < 768px) {
+  .lyrics {
+    font-size: min(14px, calc(14 / 375 * 100vw));
+  }
+}
+
+/* circle */
+.circle1 {
+  position: absolute;
+  top: min(862px, calc(862 / 1440 * 100vw));
+  left: max(-100px, calc(-100 / 1440 * 100vw));
+
+  width: min(200px, calc(200 / 1440 * 100vw));
+  height: min(200px, calc(200 / 1440 * 100vw));
+  border-radius: 50%;
+  background-color: var(--color-red);
+}
+
+.circle2 {
+  position: absolute;
+  top: min(50px, calc(50 / 1440 * 100vw));
+  right: max(-50px, calc(-50 / 1440 * 100vw));
+
+  width: min(100px, calc(100 / 1440 * 100vw));
+  height: min(100px, calc(100 / 1440 * 100vw));
+  background: var(--color-red);
+  border-radius: 50%;
+}
+
+@media (width < 768px) {
+  .circle1 {
+    top: max(-25px, calc(-25 / 375 * 100vw));
+    left: max(-25px, calc(-25 / 375 * 100vw));
+    width: min(50px, calc(50 / 375 * 100vw));
+    height: min(50px, calc(50 / 375 * 100vw));
+  }
+
+  .circle2 {
+    top: min(362px, calc(362 / 375 * 100vw));
+    right: max(-50px, calc(-50 / 375 * 100vw));
+    width: min(100px, calc(100 / 375 * 100vw));
+    height: min(100px, calc(100 / 375 * 100vw));
+  }
+}
+
+.lock-box {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: min(1440px, 100vw);
+  height: 100%;
+}
+
+@media (width < 768px) {
+  .lock-box {
+    width: min(375px, 100vw);
+  }
+}
