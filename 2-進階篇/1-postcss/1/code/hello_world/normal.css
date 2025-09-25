@@ -1,0 +1,14 @@
+/* hello world */
+@keyframes aaa {
+  0% {
+    color: red;
+  }
+  100% {
+    color: blue;
+  }
+}
+
+.apple {
+  color: yellow;
+  font-size: 100px;
+}
