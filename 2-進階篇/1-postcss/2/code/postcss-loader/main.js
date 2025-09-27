@@ -37,12 +37,12 @@ function postcssLoader(source, callback) {
 fs.readFile(RESOURCE_PATH, (_, data) => {
   const cssString = data.toString()
 
-  // 1. 把讀到的數據傳給 loader
+  // . 把讀到的數據傳給 loader
   postcssLoader(cssString, (err, css) => {
     if (err) {throw err}
 
-    // 2. 將 loader 傳出來的數據傳給下一個 loader，
-    // 3. 直到最後會拿到一個 js script 來執行
+    // . 將 loader 傳出來的數據傳給下一個 loader
+    // . 直到最後會拿到一個 js script 來執行
     console.log('[ Final Output ]')
     console.log(css)
   })

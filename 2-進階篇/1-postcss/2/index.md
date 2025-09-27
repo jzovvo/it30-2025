@@ -1,13 +1,13 @@
 # 讓 webpack 老大哥，學會使用 postcss 魔法熔爐
 
-上一篇我們學會了 `postcss` 的運作原理，不過大部分使用 `postcss` 的方式都是透過打包工具，打包工具跟 `postcss` 的流程差不多：
+上一篇我們體驗了 `postcss` 的運作過程，不過大部分使用 `postcss` 的方式都是透過打包工具，打包工具跟 `postcss` 的流程差不多：
 
 - 提供處理函式安裝。
-- 讀取檔案，將內容交給一連串處理函式處理。
-  - 第一個處理函式拿到打包工具讀到的原始數據，處理後傳給下個處理函式。
-  - 直到最後一個處理函式，必須返回打包工具指定的格式，例如一段 `module.exports = ...` JS 模組字串。
-    - 打包工具說白了就是一個 JS 腳本，他只能識別 `js` 與 `json`。
-    - 而打包工具無法識別的內容，就需要透過這些處理函式，編譯成它能理解的字串。
+- 讀取檔案，將內容交給一連串處理函式。
+  - 第一個處理函式拿到打包工具讀到的原始數據，處理完後，再傳給下個處理函式。
+  - 最後一個處理函式，必須返回打包工具指定的格式，例如一段 `module.exports = ...` JS 模組字串。
+    - 打包工具就只是個 JS 腳本，他只能識別 `js` 與 `json`。
+    - 而打包工具無法識別的內容，需要透過這些處理函式，編譯成它能理解的字串。
 - 打包工具將處理後的內容，拼接到最終打包文件中。
 - 將打包文件交給 JS 引擎執行。
 
@@ -18,7 +18,7 @@
 
 ## loader
 
-本篇要介紹的打包工具 `webpack` 引入了 `loader` 的概念，其他打包工具也都有類似的東西，只是名字可能叫做 `plugin`、`Transformer` 等，本質上就是 JS 處理函式：
+本篇要介紹的打包工具 `webpack` 引入了 `loader` 的概念，其他打包工具也都有類似的東西，只是名字可能叫做 `plugin`、`transformer` 等，本質上就是 JS 處理函式：
 
 1. 接收打包工具傳入的內容。
 2. 修改內容。
@@ -95,17 +95,25 @@ function postcssLoader(source, callback) {
 fs.readFile(RESOURCE_PATH, (_, data) => {
   const cssString = data.toString()
 
-  // 1. 把讀到的數據傳給 loader
+  // . 把讀到的數據傳給 loader
   postcssLoader(cssString, (err, css) => {
     if (err) {throw err}
 
-    // 2. 將 loader 傳出來的數據傳給下一個 loader，
-    // 3. 直到最後會拿到一個 js script 來執行
+    // . 將 loader 傳出來的數據傳給下一個 loader
+    // . 直到最後會拿到一個 js script 來執行
     console.log('[ Final Output ]')
     console.log(css)
   })
 })
 ```
+
+- `plugin`：延續「煉金工房的核心設施」的範例，將註解改成 `:)`、顏色改成 `chocolate`。
+- 整個執行過程：
+  1. `webpack` 讀到數據後傳入 `postcssLoader`。
+  2. `postcssLoader` 將數據交給 `postcss`。
+  3. `postcss` 將數據傳入各個 `plugin` 處理。
+  4. `postcssLoader` 將 `postcss` 處理完的數據返回給 `webpack`。
+  5. `webpack` 繼續將數據傳給下一個 `loader`，直到最後一個 `loader` 處理完為止，並期望該 `loader` 返回的內容是 js 模組字串。
 
 **結果**
 
@@ -121,13 +129,13 @@ fs.readFile(RESOURCE_PATH, (_, data) => {
 
 `postcss-loader` 核心任務就是作為打包工具與 Postcss 之間的橋樑，此外 `postcss-loader` 還處理了 `sourceMap` 等其他附加資訊，就不額外展開了。
 
-## 在 Webpack 使用 postcss
+## 在 Webpack 中使用 postcss
 
 打包工具在應用的層面上，其實就是一堆設定的相互配合，梳理一下流程：
 
 1. 準備一個要被 `webpack` 作為打包入口的 JS 文件。
 2. 準備一個被入口文件 import 的 css 文件，該內容會被 `postcss` 修改。
-3. 準備 `webpack` 設定檔：`webpack.config.js`，並且至少會裝上 `postcss-loader` 來使用 `postcss` 功能。
+3. 準備 `webpack` 設定檔：`webpack.config.js`，並且至少裝上 `postcss-loader` 來使用 `postcss`。
 4. 準備 `postcss.config.js`：`postcss-loader` 會自動查找項目根目錄的 `postcss` 設定檔。
 
 **package.json**
@@ -158,6 +166,8 @@ fs.readFile(RESOURCE_PATH, (_, data) => {
 
 **src/index.js**
 
+打包入口的 JS 文件。
+
 ```js
 import './normal.css'
 ```
@@ -171,46 +181,11 @@ body {
 }
 ```
 
-**webpack.config.js**
-
-```js
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import {join} from 'path'
-
-export default {
-  entry: join(import.meta.dirname, './src/index.js'),
-  mode: 'production',
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
-      },
-    ],
-  },
-  plugins: [new MiniCssExtractPlugin()],
-}
-```
-
-- `entry`：指定打包入口。
-- `mode`：`webpack` 啟用模式，為了觀察乾淨的編譯結果，選擇 `production`。
-  - 另一種模式叫 `development`，編譯結果會有一堆有的沒的標記。
-- `module.rules`
-  - 這是一套 loader 載入規則：當文件名符合 `test` 正規表示式時，就會將內容傳給 `use` 裡的 `loader` 處理
-  - `webpack loader` 預設是從後往前執行的，所以是：
-    1. 執行 `postcss-loader` 把 `css` 交給 `postcss` 編譯成我想要的樣子。
-    2. 執行 `css-loader` 把 `css` 編譯成 `js` 模組字串。
-    3. 執行 `MiniCssExtractPlugin.loader` 將 `js` 模組字串**攔截**，準備讓插件處理。
-  - `loader` 有個 `enforce` 可以主動控制執行順序，就不展開說明了。
-- `plugins` 在 `webpack` 中比較像是擴展 `webpack` 整體功能。
-  - `new MiniCssExtractPlugin` 會將 `MiniCssExtractPlugin.loader` 攔截的內容寫入獨立的 css 檔案中。
-
 **postcss.config.js**
 
-詳情可以看官方文件，最重要的是 `plugins`，用來 setup postcss plugin，也就是「煉金工房的核心設施」中，範例所寫的 `postcss([plugin])`。
+詳細設定請看官方文件，最重要的是 `plugins`，用來 setup postcss plugin，也就是「煉金工房的核心設施」中，範例所寫的 `postcss([plugin])`。
 
 ```js
-// 自己寫的 plugin，功能跟前面幾篇都差不多。
 const myPlugin = function ({txt = ':)', color = 'orange'} = {}) {
   return {
     postcssPlugin: 'my-plugin',
@@ -236,6 +211,41 @@ export default {
 ```
 
 延續「煉金工房的核心設施」的範例，將 `comment` 改成 `:)`、`color` 改成 `chocolate`。
+
+**webpack.config.js**
+
+```js
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import {join} from 'path'
+
+export default {
+  entry: join(import.meta.dirname, './src/index.js'),
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
+    ],
+  },
+  plugins: [new MiniCssExtractPlugin()],
+}
+```
+
+- `entry`：指定打包入口。
+- `mode`：`webpack` 啟用模式。
+  - 為了觀察乾淨的編譯結果，選擇 `production`。
+  - 另一種模式叫 `development`，編譯結果會有一堆有的沒的標記。
+- `module.rules`
+  - 這是一套 loader 載入規則：當文件名符合 `test` 正規表示式時，就會將內容傳給 `use` 裡的 `loader` 處理。
+  - `webpack loader` 預設是從後往前執行的，所以是：
+    1. 執行 `postcss-loader`，將 `css` 交給 `postcss` 編譯成我想要的樣子。
+    2. 執行 `css-loader`，將 `css` 編譯成 `js` 模組字串。
+    3. 執行 `MiniCssExtractPlugin.loader`，將 `js` 模組字串攔截，後續讓插件處理。
+  - `loader` 有個 `enforce` 可以主動控制執行順序，就不展開說明了。
+- `plugins` 在 `webpack` 中比較像是擴展 `webpack` 整體功能。
+  - `new MiniCssExtractPlugin` 會將 `MiniCssExtractPlugin.loader` 攔截的內容寫入獨立的 css 檔案中。
 
 **結果**
 

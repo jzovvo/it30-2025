@@ -1,4 +1,3 @@
-// 自己寫的 plugin，功能跟前面幾篇都差不多。
 const myPlugin = function ({txt = ':)', color = 'orange'} = {}) {
   return {
     postcssPlugin: 'my-plugin',
