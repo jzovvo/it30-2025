@@ -1,0 +1,7 @@
+@import './color.css';
+
+/* css/bg.css */
+p {
+  background-image: url(https://en.wikipedia.org/static/images/icons/wikipedia.png);
+  background-size: auto 100%;
+}
