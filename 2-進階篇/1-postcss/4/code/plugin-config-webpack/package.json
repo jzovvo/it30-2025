@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "mini-css-extract-plugin": "^2.9.4",
+    "postcss-load-config": "^6.0.1",
+    "postcss-loader": "^8.1.1",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "postcss-calc": "^10.1.1"
+  },
+  "type":"module"
+}

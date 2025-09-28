@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "postcss-calc": "^10.1.1",
+    "postcss-load-config": "^6.0.1",
+    "vite": "^7.1.7"
+  }
+}
