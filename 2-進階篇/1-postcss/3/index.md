@@ -99,12 +99,10 @@ declare module '*.module.css' {
   const classes: {[key: string]: string}
   export default classes
 }
-
-declare module '*.css'
 ```
 
 - `.d.ts` 是 ts 的類型定義檔案。
-  - 例如我寫的這個：告訴 `ts` 編譯器說我認識 `*.module.css`，他是個普通物件，所以 `ts` 才允許我 `import style from './css/text-center.module.css'`，並允許我 `style.textCenter`。
+  - 例如我寫的這個：告訴 `ts` 編譯器說我認識 `*.module.css`，他是個普通物件。所以 `ts` 才允許我 `import style from './css/text-center.module.css'`，並允許我 `style.textCenter`。
 
 **postcss.config.js**
 
@@ -191,7 +189,7 @@ p {
 
 ### vite 設定檔
 
-`vite` 設定檔有個 `css.postcss` 選項，可直接將 `postcss` 設定寫在這裡，但有幾個要注意的點：
+`vite` 設定檔有個 `css.postcss` 選項，可直接將 `postcss` 設定寫在這裡，但有幾個需注意的點：
 
 - 設置 `css.postcss` 選項後，就不會自動查找 `postcss` 設定檔，避免多個設定檔並存而導致混亂。
 - `postcss` 的 `plugins` 設定有 `{}` 與 `[]` 兩種寫法，但 `vite` 設定檔中的 `css.postcss.plugins` 只能是 `[]`。
@@ -274,7 +272,7 @@ dist/assets/index-BevIDbve.css  0.01 kB │ gzip: 0.03 kB
 
 以上就是如何在 `vite` 中使用 `postcss`～
 
-我們已經學會如何在主流的兩個打包工具中使用 `postcss` 了。不過我其實還沒介紹 `postcss` 中最重要的 `plugins` 設定如何使用，只有稍微提及他能接受兩種寫法 `[]` 與 `{}`，下篇我們將完成 `postcss` 使用上的最後一塊重要拼圖～我們下篇見囉。
+我們已經學會如何在主流的兩個打包工具中使用 `postcss` 了。不過我其實還沒介紹 `postcss` 中最重要的 `plugins` 設定如何使用，只有稍微提及他能接受兩種寫法：`[]` 與 `{}`，下篇我們將完成 `postcss` 使用上的最後一塊重要拼圖～我們下篇見囉。
 
 ## 補充說明
 
