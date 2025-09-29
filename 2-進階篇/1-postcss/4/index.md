@@ -38,7 +38,7 @@ export default plugin
 - **插件設定物件**：
   - 格式：`plugins: [{ postcssPlugin: '??' }]`。
 - **插件函式**：
-  - 格式：`plugins: [postcssPlugin]`。
+  - 格式：`plugins: [() => ({ postcssPlugin: '??' })]`。
   - 說明：
     - **插件函式一定要加上 `.postcss = true`**。
     - `postcss` 會在內部執行該函式，以獲取插件設定物件。
