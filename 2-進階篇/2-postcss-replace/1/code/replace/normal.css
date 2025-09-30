@@ -1,0 +1,4 @@
+p {
+  border: calc(add(multiply(3, 3), 2)px + 3px) solid orange;
+  padding: calc(multiply(add(multiply(1, 2), multiply(3, 4)), 5)px + 3px) multiply(3, 3)px;
+}
