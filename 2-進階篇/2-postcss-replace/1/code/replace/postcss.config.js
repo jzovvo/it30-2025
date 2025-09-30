@@ -7,7 +7,7 @@ const myPlugin = function (functions = {}) {
       let newValue = decl.value
       let match
 
-      console.log(`[ 處理 ${decl.value} 中 ]`)
+      console.log(`[ 處理 ${decl.prop}: ${decl.value} ]`)
 
       while ((match = functionCallRegex.exec(decl.value)) !== null) {
         const [fullMatch, functionName, argsString] = match

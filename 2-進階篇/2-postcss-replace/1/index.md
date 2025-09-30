@@ -5,22 +5,22 @@
 我們先梳理一下應該做些什麼：
 
 1. 寫計算函式。
-2. 拿到 css 屬性值。
+2. 利用 `postcss` 的 `Declaration` 拿到 css 屬性值。
 3. 將所有長得像函式呼叫的字串挑出來。
 4. 將我們想攔截的函式挑出來。
 5. 將函式參數挑出來。
-6. 將參數丟進函式執行，獲取結果。
+6. 將參數傳入函式中執行，獲取結果。
 7. 將結果替換掉被我們攔截的函式呼叫字串。
-8. 查找該屬性值還有沒有其他長得像函式呼叫的字串（回到 `3.`）。
+8. 查找**同一個屬性值**還有沒有其他長得像函式呼叫的字串（回到 `3.`）。
 9. 將結果還給 `postcss` 處理。
-   - 他發現有值被修改時，會拿修改後的值，再次執行參與更新的 hook。
+   - 他發現有值被修改時，會拿修改後的值，再次執行 `Declaration`（回到 `2.`）。
      - 這是 `postcss` 的特性，可參考「煉金工房的核心設施」的介紹。
-     - 此時原本不符合我們匹配條件的函式呼叫字串，在經過上一輪的替換後，可能就符合條件而被我們挑出來了。
+     - 此時原本不符合我們匹配條件的函式呼叫字串，經過上一輪的替換後，可能就符合條件而被我們挑出來了。
    - 最終所有符合條件的函式呼叫字串都會被執行後的結果替換。
 
 ## 無法避免的正規表示式
 
-從梳理的流程中可知，我們需要從屬性值中挑出符合特定規則的字符，那麼無可避免的必須使用正規表示式，但篇幅無法完整介紹正規表示式，我們只能換個方式：直接將正規表示式寫出來，儘量解釋其中每個部分的作用，如果看不懂也沒關係，只需知道**這個正規表示式可以將「長得像函式呼叫的字串」與「函式參數」挑出來**就行了！
+從梳理的流程中可知，我們需要從屬性值中挑出符合特定規則的字符，無可避免的必須使用正規表示式，但篇幅無法完整介紹正規表示式，我們只能換個方式：直接將正規表示式寫出來，儘量解釋其中每個部分的作用，如果看不懂也沒關係，只需知道**這個正規表示式可以將「長得像函式呼叫的字串」與「函式參數」挑出來**就行了！
 
 ```js
 const functionCallRegex = /(\w+)\(([^()]*)\)/g
@@ -34,7 +34,7 @@ console.log(functionCallRegex.exec(str)) // null
 
 正規表示式是用一堆具有特殊意義的字符去描述一套字符規則，用字符規則去匹配字串中是否有符合規則的部分。
 
-在 `js` 中，`/xxx/` 為正規表示式的意思，而我以 `/(\w+)\(([^()]*)\)/g` 來描述函式呼叫的字符規則，並使用 `exec` 方法來匹配 `'add(1,2) sub(3,add(4,5)) add()'`。以下我儘量解釋規則的每個部分含義：
+在 `js` 中，`/xxx/` 為正規表示式的意思，而我以 **`/(\w+)\(([^()]*)\)/g`** 來描述函式呼叫的字符規則，並使用 `exec` 方法來匹配 `'add(1,2) sub(3,add(4,5)) add()'`。以下我儘量解釋規則的每個部分含義：
 
 **`(\w+)`**
 
@@ -93,7 +93,7 @@ console.log(functionCallRegex.exec(str)) // null
   console.log(noG.exec(str)) // [ 'ab', index: 0 ]
   console.log(noG.exec(str)) // [ 'ab', index: 0 ]
   ```
-  - 正規表示式匹配成功時都會紀錄 `index`，表示這次結果是從第幾個字符開始匹配的。
+  - 正規表示式匹配成功時，都會紀錄 `index`：表示這次結果是從第幾個字符開始匹配的。
   - 沒有 `g` 的 `index` 每次都是 `0`，表示重頭匹配。
 - 總結來說就是**用來找到字串中的所有函式呼叫**。
 
@@ -111,7 +111,7 @@ console.log(functionCallRegex.exec(str)) // null
 
 這其實是刻意設計的，為的是讓函式執行從內而外逐個執行後替換，例如：
 1. `sub(3,add(4,5))` 的 `add(4,5)` 替換成 `9` 後。
-2. `postcss` 會拿 `sub(3,9)` 再來執行 hook，此時 `sub` 也能被匹配成功而執行後替換了。
+2. `postcss` 會拿 `sub(3,9)` 再來執行 `Declaration`，此時 `sub` 也能被匹配成功而執行後替換。
 
 
 以上就是整個 `/(\w+)\(([^()]*)\)/g` 的解釋，正規表示式對於像我這種似懂非懂的人來說都很難了，所以我實在也不知道怎麼讓完全沒接觸過的人看懂 😦。如果你完全看不懂也真的沒關係，你只要知道一個結論：
@@ -142,12 +142,12 @@ console.log(functionCallRegex.exec(str)) // null
 
 ```css
 p {
-  border: calc(add(multiply(3, 3), 2)px + 3px) solid orange;
+  width: calc(add(multiply(3, 3), 2)px + 3px);
   padding: calc(multiply(add(multiply(1, 2), multiply(3, 4)), 5)px + 3px) multiply(3, 3)px;
 }
 ```
 
-有點複雜的函式呼叫，我們的目標就是把 `add` 跟 `multiply` 給執行後替換！
+有點複雜的函式呼叫，我們的目標是把 `add` 跟 `multiply` 給執行後替換！
 
 **postcss.config.js**
 
@@ -161,7 +161,7 @@ const myPlugin = function (functions = {}) {
       let newValue = decl.value
       let match
 
-      console.log(`[ 處理 ${decl.value} 中 ]`)
+      console.log(`[ 處理 ${decl.prop}: ${decl.value} ]`)
 
       while ((match = functionCallRegex.exec(decl.value)) !== null) {
         const [fullMatch, functionName, argsString] = match
@@ -203,55 +203,62 @@ export default {
 ```
 
 1. 準備兩個計算函式：`add` 與 `multiply`。
-2. 利用 `Declaration` 拿到 Css 屬性值。
+2. 利用 `postcss` 的 `Declaration` 拿到 css 屬性值。
 3. 透過 `/(\w+)\(([^()]*)\)/g.exec` 將所有長得像函式呼叫的字串挑出來。
-4. 透過 `(\w+)` 將函式名給挑出來，並且只留下 `add` 或 `multiply`。
+4. 透過 `(\w+)` 將函式名挑出來，並只留下 `add` 或 `multiply`。
 5. 透過 `([^()]*)` 將函式參數挑出來。
-6. 將參數丟進函式執行，獲取結果。
+6. 將參數傳入函式中執行，獲取結果。
 7. 將結果替換掉被我們攔截的函式呼叫字串。
    - `newValue = newValue.replace(fullMatch, result)`
-8. 利用 `while` 持續對同一個 Css 屬性 `exec`，查找並替換所有最內層的函式呼叫字串（回到 `3.`）。
+8. 利用 `while` 持續對**同一個屬性值** `exec`，查找並替換所有**最內層的函式呼叫字串**（回到 `3.`）。
 9. 將結果還給 `postcss` 處理，下一輪 `Declaration` 再更新替換後的 css 屬性值（回到 `2.`）。
    - `decl.value = newValue`
+   - 直到所有符合條件的函式呼叫字串都被執行後替換而結束。
 
 **結果**
 
 ```shell
 % npx vite build --minify false
-[ 處理 calc(add(multiply(3, 3), 2)px + 3px) solid orange 中 ]
+[ 處理 width: calc(add(multiply(3, 3), 2)px + 3px) ]
 替換 multiply(3, 3) 為 9!
-[ 處理 calc(multiply(add(multiply(1, 2), multiply(3, 4)), 5)px + 3px) multiply(3, 3)px 中 ]
+[ 處理 padding: calc(multiply(add(multiply(1, 2), multiply(3, 4)), 5)px + 3px) multiply(3, 3)px ]
 替換 multiply(1, 2) 為 2!
 替換 multiply(3, 4) 為 12!
 替換 multiply(3, 3) 為 9!
-[ 處理 calc(add(9, 2)px + 3px) solid orange 中 ]
+[ 處理 width: calc(add(9, 2)px + 3px) ]
 替換 add(9, 2) 為 11!
-[ 處理 calc(multiply(add(2, 12), 5)px + 3px) 9px 中 ]
+[ 處理 padding: calc(multiply(add(2, 12), 5)px + 3px) 9px ]
 替換 add(2, 12) 為 14!
-[ 處理 calc(11px + 3px) solid orange 中 ]
+[ 處理 width: calc(11px + 3px) ]
 我沒有要攔截 calc 函式!
-[ 處理 calc(multiply(14, 5)px + 3px) 9px 中 ]
+[ 處理 padding: calc(multiply(14, 5)px + 3px) 9px ]
 替換 multiply(14, 5) 為 70!
-[ 處理 calc(70px + 3px) 9px 中 ]
+[ 處理 padding: calc(70px + 3px) 9px ]
 我沒有要攔截 calc 函式!
 
 # ...
-dist/assets/index-Dk77RTJf.css  0.08 kB │ gzip: 0.09 kB
+dist/assets/index-CkZrhj5N.css  0.07 kB │ gzip: 0.07 kB
 
-% cat ./dist/assets/index-Dk77RTJf.css
+% cat ./dist/assets/index-CkZrhj5N.css
 p {
-  border: calc(11px + 3px) solid orange;
+  width: calc(11px + 3px);
   padding: calc(70px + 3px) 9px;
 }
 ```
 
-我們直接觀察 `calc(add(multiply(3, 3), 2)px + 3px)`：
+我們直接觀察 `width` 的處理過程：
 
-1. 拿到 `calc(add(multiply(3, 3), 2)px + 3px) solid orange`，此時我們應該只能匹配到 `multiply(3, 3)`，然後就替換為 `9`。
-2. hook 再次執行，這次拿到了 `calc(add(9, 2)px + 3px)`，因為 `multiply(3, 3)` 被替換成 `9` 了，所以此時 `add` 就能匹配成功了。
-3. hook 再次執行，這次拿到了 `calc(11px + 3px) solid orange`，`calc` 匹配成功，但是我們沒有要處理 `calc`，所以就結束了。
+1. `Declaration` 拿到 `calc(add(multiply(3, 3), 2)px + 3px)`
+   - `multiply(3, 3)` 匹配成功。
+   - 替換為 `9`（3 * 3 = 9）。
+2. `Declaration` 再次執行，拿到 `calc(add(9, 2)px + 3px)`
+   - `1.` 將 `multiply(3, 3)` 替換成 `9` 了，所以 `add(9, 2)` 就能匹配成功。
+   - 替換為 `11`（9 + 2 = 11）。
+3. `Declaration` 再次執行，拿到 `calc(11px + 3px)`。
+   - `calc` 匹配成功，但我們沒有攔截 `calc`。
+   - 沒有其他字串匹配成功，`width` 更新完成。
 
-以上就是整個處理過程！希望大家能理解我到底在幹嘛～如果無法理解也沒關係，這篇只是想讓大家清楚整個替換過程，要完美寫出沒有破綻的正規表示式是相當困難的，例如 `/(\w+)\(([^()]*)\)/g` 遇到 `add("(")` 就匹配失敗了，我在實際工作上肯定都用別人寫好的工具，所以接下來將陸續分享好用的工具給大家，明天見囉～
+以上就是整個處理過程！希望大家能理解我到底在幹嘛～如果無法理解也沒關係，這篇只是想讓大家清楚整個替換過程，要完美寫出沒有破綻的正規表示式是相當困難的，例如 `/(\w+)\(([^()]*)\)/g` 遇到 `add("(")` 就匹配失敗。我在實際工作中都用別人寫好的工具，所以接下來將陸續分享好用的工具給大家，明天見囉～
 
 ## 參考連結
 
