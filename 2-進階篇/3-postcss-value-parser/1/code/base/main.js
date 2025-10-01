@@ -8,7 +8,7 @@ parsed.walk(node => {
   console.dir(node, {depth: null})
   if (node.type === 'function' && node.value === 'add') {
     node.type = 'word'
-    node.value = 'linear-gradient(to right, red, blue)'
+    node.value = '2px'
   }
 })
 

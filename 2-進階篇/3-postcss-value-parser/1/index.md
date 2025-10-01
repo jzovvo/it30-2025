@@ -15,7 +15,7 @@ parsed.walk(node => {
   console.dir(node, {depth: null})
   if (node.type === 'function' && node.value === 'add') {
     node.type = 'word'
-    node.value = 'linear-gradient(to right, red, blue)'
+    node.value = '2px'
   }
 })
 
@@ -29,7 +29,7 @@ console.log(parsed.toString())
     - 函式呼叫替換為數值的做法：
       - 將 `node` 的類型改成 `word`。
       - 將 `node` 的值改成你要替換的字串。
-      - 範例中將 `add()` 換成 `linear-gradient()`。
+      - 例如範例中將 `add()` 換成 `2px`。
   - `parsed.toString`: 將整個 AST 轉回 `css` 屬性值。
 - `valueParser.stringify`: 將指定的 `node` 轉回 `string`。
 
@@ -89,7 +89,7 @@ console.log(parsed.toString())
 [ 100px 解析出來的 AST node ]
 { type: 'word', sourceIndex: 17, sourceEndIndex: 22, value: '100px' }
 
-linear-gradient(to right, red, blue) 100px
+2px 100px
 ```
 
 - `valueParser` 將 `add(sub(1, 2),3) 100px` 拆成三個 node：`add(sub(1, 2),3)`、` `、`100px`。
@@ -97,7 +97,7 @@ linear-gradient(to right, red, blue) 100px
   - 參數可能是另個函式呼叫的拆解。
   - 逗號的類型是 `div`。
   - 有了這個，就不用自己寫正規表示式了。
-- 將 `url(foo.png)` 換成 `linear-gradient` 的效果成功了。
+- 將 `add(sub(1, 2),3)` 換成 `2px` 的效果成功了。
 
 ## 開工！
 
