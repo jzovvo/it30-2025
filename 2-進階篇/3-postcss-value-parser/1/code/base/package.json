@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "postcss-value-parser": "^4.2.0"
+  }
+}
