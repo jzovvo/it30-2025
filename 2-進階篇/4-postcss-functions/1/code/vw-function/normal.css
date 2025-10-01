@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.pxToVw {
+  margin-left: pxToVw(50, 375);
+}
+
+.pxToVwMin {
+  margin-left: pxToVwClamp(50, 375);
+}
+
+.pxToVwMax {
+  margin-left: pxToVwClamp(-50, 375);
+}
+
+.pxToVwExtend {
+  margin-left: pxToVwExtend(50, 375);
+}
