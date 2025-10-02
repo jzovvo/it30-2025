@@ -1,0 +1,206 @@
+:root {
+  --color-red: #C22A29;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: black;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  color: white;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+/* layout */
+#app {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 100vw;
+  overflow: hidden;
+  padding: pxToVwClamp2(50) 0;
+}
+
+.container {
+  width: pxToVwClamp2(1340);
+  margin: auto;
+  display: flex;
+}
+
+.box1 {
+  margin-right: pxToVwClamp2(50);
+}
+
+.box2 {
+  flex: 1;
+}
+
+@media (width < 768px) {
+  #app {
+    padding: pxToVwClamp1(30) 0;
+  }
+
+  .container {
+    width: pxToVwClamp1(335);
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .box1 {
+    margin-right: 0;
+    margin-bottom: pxToVwClamp1(20);
+  }
+}
+
+/* album */
+.album {
+  width: max-content;
+  background: var(--color-red);
+  padding: pxToVwClamp2(50);
+  margin-bottom: pxToVwClamp2(50);
+}
+
+.album-inner {
+  position: relative;
+  width: pxToVwClamp2(500);
+}
+
+.album-inner::after {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.album img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (width < 768px) {
+  .album {
+    padding: pxToVwClamp1(20);
+    margin-bottom: pxToVwClamp1(20);
+  }
+
+  .album-inner {
+    width: pxToVwClamp1(260);
+  }
+}
+
+/* info */
+.info-box {
+  padding-left: pxToVwClamp2(30);
+}
+
+.square {
+  position: absolute;
+  top: 50%;
+  left: pxToVwClamp2(-10);
+  transform: translate3d(-100%,-50%,0);
+
+  width: pxToVwClamp2(20);
+  height: pxToVwClamp2(20);
+  background-color: var(--color-red);
+}
+
+.song {
+  position: relative;
+
+  font-size: pxToVwClamp2(40);
+  font-weight: 700;
+}
+
+.singer {
+  font-size: pxToVwClamp2(32);
+}
+
+@media (width < 768px) {
+  .info-box {
+    padding-left: pxToVwClamp1(20);
+  }
+
+  .square {
+    left: pxToVwClamp1(-10);
+    width: pxToVwClamp1(10);
+    height: pxToVwClamp1(10);
+  }
+
+  .song {
+    font-size: pxToVwClamp1(25);
+  }
+
+  .singer {
+    font-size: pxToVwClamp1(18);
+  }
+}
+
+/* lyrics */
+.lyrics {
+  font-size: pxToVwClamp2(28);
+}
+
+@media (width < 768px) {
+  .lyrics {
+    font-size: pxToVwClamp1(14);
+  }
+}
+
+/* circle */
+.circle1 {
+  position: absolute;
+  top: pxToVwClamp2(862);
+  left: pxToVw2(-100);
+
+  width: pxToVwClamp2(200);
+  height: pxToVwClamp2(200);
+  border-radius: 50%;
+  background-color: var(--color-red);
+}
+
+.circle2 {
+  position: absolute;
+  top: pxToVwClamp2(50);
+  right: pxToVwClamp2(-50);
+
+  width: pxToVwClamp2(100);
+  height: pxToVwClamp2(100);
+  background: var(--color-red);
+  border-radius: 50%;
+}
+
+@media (width >= 1440px) {
+  .circle1 {
+    left: pxToVwExtend2(-100);
+  }
+}
+
+@media (width < 768px) {
+  .circle1 {
+    top: pxToVwClamp1(-25);
+    left: pxToVwExtend1(-25);
+    width: pxToVwClamp1(50);
+    height: pxToVwClamp1(50);
+  }
+
+  .circle2 {
+    top: pxToVwClamp1(362);
+    right: pxToVwClamp1(-50);
+    width: pxToVwClamp1(100);
+    height: pxToVwClamp1(100);
+  }
+}
+
+@media (width < 375px) {
+  .circle1 {
+    left: pxToVw1(-25);
+  }
+}
