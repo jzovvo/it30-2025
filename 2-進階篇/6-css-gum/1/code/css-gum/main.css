@@ -1,0 +1,9 @@
+body {
+  font-size: vw1(100);
+}
+
+@media (width < 768px) {
+  body {
+    font-size: vw0(100);
+  }
+}
