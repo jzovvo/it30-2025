@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .circle {
+    position: absolute;
+    top: vwc(862, 1440);
+    left: vw(-100, 1440);
+
+    width: vwc(200, 1440);
+    height: vwc(200, 1440);
+    border-radius: 50%;
+    background-color: #C22A29;
+  }
+
+  @media (width >= 1440px) {
+    .circle {
+      left: vwe(-100, 1440);
+    }
+  }
+
+  @media (width < 768px) {
+    .circle {
+      top: vwc(-25, 375);
+      left: vwe(-25, 375);
+      width: vwc(50, 375);
+      height: vwc(50, 375);
+    }
+  }
+
+  @media (width < 375px) {
+    .circle {
+      left: vw(-25, 375);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="circle"></div>
+</body>
+</html>

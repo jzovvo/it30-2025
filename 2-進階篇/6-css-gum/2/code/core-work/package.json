@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "postcss-functions": "^4.0.2",
+    "vite": "^7.1.4"
+  },
+  "dependencies": {
+    "css-gum": "^1.4.2"
+  }
+}
