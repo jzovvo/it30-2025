@@ -41,19 +41,19 @@ console.log(core.vwc(10,100)) // 'min(10px, 10vw)'
 ```js
 import {Gen} from 'css-gum'
 
-const Core = Gen.genFuncsCore({
+const {core} = Gen.genFuncsCore({
   space: 1,
-}).core
+})
 
-console.log(Core.vw(10,100,1).length) // 5
-console.log(Core.vw(10,100,0).length) // 4
+console.log(core.vw(10,100,1).length) // 5
+console.log(core.vw(10,100,0).length) // 4
 
-console.log(Core.vw(10,100).length) // 5
+console.log(core.vw(10,100).length) // 5
 ```
 
-- `Core.vw(10, 100, 1)`：有空格的返回 5 個字符。
-- `Core.vw(10, 100, 0)`：沒空格的返回 4 個字符。
-- `Core.vw(10, 100)`：返回 5 個字符，證明預設 `space` 改成 `1` 了。
+- `core.vw(10, 100, 1)`：有空格的返回 5 個字符。
+- `core.vw(10, 100, 0)`：沒空格的返回 4 個字符。
+- `core.vw(10, 100)`：返回 5 個字符，證明預設 `space` 改成 `1` 了。
 
 ## `Gen.genFuncsDraftWidth` 批量生成
 
