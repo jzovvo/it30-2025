@@ -28,8 +28,8 @@ console.log(core.vwc(10,100)) // 'min(10px, 10vw)'
 ```
 
 - 我將 `vw` 函式名改成 `aaa`，所以：
-  - `Core.vw` 是 `undefined`。
-  - `Core.aaa` 可以執行。
+  - `core.vw` 是 `undefined`。
+  - `core.aaa` 可以執行。
 - 我將 `nameVwe` 設為 `''`，所以 `vwe` 函式就不存在了。
 - `vwc` 沒有任何變更，所以正常使用。
 - 搭配 `postcss-functions` 使用時，直接 `{ functions: core }` 即可。
@@ -81,9 +81,10 @@ const DESIGN_DRAFT2 = 1440
 - `space: 0 | 1`：函式預設是否生成空格。
 - `points: number[]`：指定設計稿寬度。
 - `order: 'asc' | 'desc'`：
-  - 為 `points` 排序的排序規則，並依序生成每套函式。
+  - 為 `points` 排序的排序規則。
     - `order: 'asc'`：從小到大，例如 `[375,1440]`，預設為 `asc`。
     - `order: 'desc'`：從大到小，例如 `[1440,375]`。
+  - `css-gum` 會依據排序生成函式編號。
 - `firstIndex: number`：
   - 每套函式生成時，都會在函式名後面加上數字，並在下一套生成時對該數字 +1，而 `firstIndex` 指的是第一個數字應為多少。
   - 預設為 `0`。
