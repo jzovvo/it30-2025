@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .circle {
+    position: absolute;
+    top: pxToVwClamp2(862);
+    left: pxToVw2(-100);
+
+    width: pxToVwClamp2(200);
+    height: pxToVwClamp2(200);
+    border-radius: 50%;
+    background-color: #C22A29;
+  }
+
+  @media (width >= 1440px) {
+    .circle {
+      left: pxToVwExtend2(-100);
+    }
+  }
+
+  @media (width < 768px) {
+    .circle {
+      top: pxToVwClamp1(-25);
+      left: pxToVwExtend1(-25);
+      width: pxToVwClamp1(50);
+      height: pxToVwClamp1(50);
+    }
+  }
+
+  @media (width < 375px) {
+    .circle {
+      left: pxToVw1(-25);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="circle"></div>
+</body>
+</html>
