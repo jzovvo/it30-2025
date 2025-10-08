@@ -72,10 +72,12 @@ console.log(Snippet.genVSCodeSnippetDraftWidth({pointsSize:3, firstIndex: 10}))
 
 ```js
 import {Snippet} from 'css-gum'
-import {join} from 'path'
+import {dirname, join} from 'path'
+import {fileURLToPath} from 'url'
 
+const __dirname = import.meta.dirname ?? dirname(fileURLToPath(import.meta.url)) ?? ''
 const snippetOutput = [
-  join(import.meta.dirname, '.vscode/css-gum.code-snippets'),
+  join(__dirname, '.vscode/css-gum.code-snippets'),
 ]
 
 const snippetConfig = {
@@ -120,12 +122,14 @@ Snippet.writeSnippetsToFiles(snippetConfig, snippetOutput)
 **程式碼**
 
 ```js
-import {join} from 'path'
+import {dirname, join} from 'path'
 import {Gen, Snippet} from 'css-gum'
+import {fileURLToPath} from 'url'
 
+const __dirname = import.meta.dirname ?? dirname(fileURLToPath(import.meta.url)) ?? ''
 const designDraft = [375, 1440]
 const snippetOutput = [
-  join(import.meta.dirname, '.vscode/css-gum.code-snippets'),
+  join(__dirname, '.vscode/css-gum.code-snippets'),
 ]
 
 const nameVw = 'pxToVw'

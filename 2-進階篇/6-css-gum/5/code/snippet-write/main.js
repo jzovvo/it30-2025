@@ -1,8 +1,10 @@
 import {Snippet} from 'css-gum'
-import {join} from 'path'
+import {dirname, join} from 'path'
+import {fileURLToPath} from 'url'
 
+const __dirname = import.meta.dirname ?? dirname(fileURLToPath(import.meta.url)) ?? ''
 const snippetOutput = [
-  join(import.meta.dirname, '.vscode/css-gum.code-snippets'),
+  join(__dirname, '.vscode/css-gum.code-snippets'),
 ]
 
 const snippetConfig = {
