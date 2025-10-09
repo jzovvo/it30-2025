@@ -298,5 +298,6 @@ export default {
 
 - [實戰1：設計稿華麗轉生為等比縮放網站](../../../1-基礎篇/1-vw/5/index.md)
 - [實戰4：揮舞魔法奇物，重鑄 CSS 咒文](../../4-postcss-functions/2/index.md)
+- [手工刻印的快捷符文](../../5-snippets/1/index.md)
 - [咒文書的自動化工廠：css-gum 的 Gen 模組](../4/index.md)
 - [快捷符文生成器：css-gum 的 Snippet 模組](../5/index.md)
