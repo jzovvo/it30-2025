@@ -1,0 +1,127 @@
+*,
+::before,
+::after,
+::backdrop,
+::file-selector-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+
+  font: inherit;
+  color: inherit;
+  vertical-align: baseline;
+}
+
+:root {
+  font-family: system-ui, sans-serif;
+
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  font-optical-sizing: auto;
+  word-break: break-word;
+  -webkit-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -o-text-size-adjust: none;
+  text-size-adjust: none;
+
+  touch-action: manipulation;
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+
+/* media */
+picture,
+img,
+svg,
+video,
+canvas,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: auto;
+}
+
+source {
+  display: block;
+}
+
+svg {
+  fill: currentColor;
+}
+
+/* list */
+ul,
+ol,
+li,
+menu {
+  list-style: none;
+}
+
+/* link */
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* table */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+label {
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  display: block;
+  background: none;
+  outline: none;
+  border: none;
+  line-height: inherit;
+}
+
+textarea {
+  resize: none;
+}
+
+/* button */
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"],
+[role="button"] {
+  cursor: pointer;
+  appearance: none;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+
+/* dialog */
+dialog {
+  width: auto;
+  height: auto;
+  background: none;
+}
+
+/* text */
+p,
+blockquote,
+dd {
+  text-indent: 0;
+}
+
+abbr {
+  text-decoration: none;
+}

@@ -1,0 +1,28 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  picture, img {
+    width: 100%;
+  }
+  div {
+    background-color: blue;
+    font-size: vwc1(100);
+  }
+
+  @media (width < 768px) {
+    div {
+      background-color: orange;
+      font-size: vwc0(100);
+    }
+  }
+</style>
+<div>hi :)</div>
+
+<picture>
+  <source media="(max-width: 767px)" srcset="./375.png"/>
+  <img src="./1440.png" alt=""/>
+</picture>
