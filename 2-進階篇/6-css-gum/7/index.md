@@ -1,4 +1,4 @@
-## 實戰6：Tailwind 與 css-gum 的協奏曲
+# 實戰6：Tailwind 與 css-gum 的協奏曲
 
 前端開發中，除了原生寫法外，另一種相當不同但是常見的寫法就是 `Tailwind`。`Tailwind` 定義一套約定規則，在編譯時會在需要編譯的檔案中查找是否有匹配的規則字串，找到就會編譯出對應的 css 讓你使用。
 
@@ -24,7 +24,7 @@
 
 由於篇幅的關係，我只能假定願意看這篇的你是懂 `Tailwind` 的工程師。這篇我會將「實戰4」改用 `Tailwind` 實現一遍，但在那之前，我們需要從 `css-gum` 中再掏出一個法寶。
 
-### Config.genTailwindBreakpointConfig
+## Config.genTailwindBreakpointConfig
 
 ```ts
 interface Opt {
@@ -124,7 +124,7 @@ export default {
 
 - 因為 `--breakpoint-p0: 375px`，所以在 374 時（`max-p0`），背景色從藍色變成紅色。
 
-### tailwind 實戰
+## tailwind 實戰
 
 為了減少寫 `Tailwind` 的你對於這套工作流的使用困惑，我將「實戰4」完整的用 `Tailwind` 重新實現一遍，作法如下：
 
