@@ -1,0 +1,2 @@
+@import "tailwindcss";
+@import "./_breakpoint.css" layer(theme);

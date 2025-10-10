@@ -1,0 +1,5 @@
+@theme {
+  --breakpoint-p0: 375px;
+  --breakpoint-p1: 768px;
+  --breakpoint-p2: 1440px;
+}

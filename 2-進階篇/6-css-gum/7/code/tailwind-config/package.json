@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "tailwindcss": "^4.1.13",
+    "vite": "^7.1.5"
+  },
+  "dependencies": {
+    "css-gum": "^1.4.2"
+  }
+}

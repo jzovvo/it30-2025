@@ -1,0 +1,9 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "./font.css" layer(theme);
+@import "./color.css" layer(theme);
+@import "./_breakpoint.css" layer(theme);
+@import "./reset.css" layer(base);
+@import "./normal.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
