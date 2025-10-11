@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "css-gum": "^1.4.2"
+  },
+  "type": "module"
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow: scroll;
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      height: 200vh;
+    }
+
+    div {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    p {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    input {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      background-color: transparent;
+    }
+
+    .vw_vh {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .svw_svh {
+      width: 100svw;
+      height: 100svh;
+    }
+
+    .lvw_lvh {
+      width: 100lvw;
+      height: 100lvh;
+    }
+
+    .dvw_dvh {
+      width: 100dvw;
+      height: 100dvh;
+    }
+
+    .percent {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <div class="vw_vh"></div>
+  <div class="svw_svh"></div>
+  <div class="lvw_lvh"></div>
+  <div class="dvw_dvh"></div>
+  <div class="percent"></div>
+  <p></p>
+  <input type="text" value="" />
+  <script>
+    const vw_vh = document.querySelector('.vw_vh')
+    const svw_svh = document.querySelector('.svw_svh')
+    const lvw_lvh = document.querySelector('.lvw_lvh')
+    const dvw_dvh = document.querySelector('.dvw_dvh')
+    const percent = document.querySelector('.percent')
+
+    const p = document.querySelector('p')
+
+    const updateInfo = () => {
+      p.innerHTML = `
+        window: w - ${window.innerWidth}, h - ${window.innerHeight}<br/>
+        html: w - ${document.documentElement.clientWidth}, h - ${document.documentElement.clientHeight}<br/>
+        percent: w - ${percent.clientWidth}, h - ${percent.clientHeight}<br/>
+        vw_vh: w - ${vw_vh.clientWidth}, h - ${vw_vh.clientHeight}<br/>
+        svw_svh: w - ${svw_svh.clientWidth}, h - ${svw_svh.clientHeight}<br/>
+        lvw_lvh: w - ${lvw_lvh.clientWidth}, h - ${lvw_lvh.clientHeight}<br/>
+        dvw_dvh: w - ${dvw_dvh.clientWidth}, h - ${dvw_dvh.clientHeight}
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>
