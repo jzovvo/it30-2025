@@ -1,0 +1,33 @@
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    height: 200vh;
+  }
+
+  div {
+    width: 100vw;
+    background-color: orange;
+  }
+</style>
+<div></div>
+<script>
+  const div = document.querySelector('div')
+
+  const updateInfo = () => {
+    div.innerHTML = `
+      html: ${document.documentElement.clientWidth}<br/>
+      body: ${document.body.clientWidth}<br/>
+      div: ${div.clientWidth}
+    `
+  }
+
+  window.addEventListener('resize', updateInfo)
+
+  updateInfo()
+</script>

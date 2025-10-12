@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .parent {
+      height: 200dvh;
+      transform: translate3d(0,0,0);
+    }
+
+    .fixed {
+      position: fixed;
+      inset: 0;
+    }
+
+    .info {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+  </style>
+  <div class="fixed fixed1"></div>
+  <div class="parent">
+    <div class="fixed fixed2"></div>
+  </div>
+  <div class="info"></div>
+  <script>
+    const fixed1 = document.querySelector('.fixed1')
+    const fixed2 = document.querySelector('.fixed2')
+    const info = document.querySelector('.info')
+
+    const updateInfo = () => {
+      const fixed1Style = getComputedStyle(fixed1)
+      const fixed2Style = getComputedStyle(fixed2)
+
+      info.innerHTML = `
+        <p>fixed1: ${fixed1Style.height}</p>
+        <p>fixed2: ${fixed2Style.height}</p>
+      `
+    }
+
+    window.addEventListener('resize', updateInfo)
+    updateInfo()
+  </script>
+</body>
+</html>

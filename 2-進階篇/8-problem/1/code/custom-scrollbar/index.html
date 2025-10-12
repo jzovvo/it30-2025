@@ -1,0 +1,86 @@
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+  }
+
+  /* 隱藏滾動條 */
+  html, body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
+  }
+
+  /* 此時 width: 100vw 就不會產生 x scrollbar */
+  #app {
+    width: 100vw;
+    height: 200vh;
+  }
+
+  .box {
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+    margin-left: auto;
+  }
+
+  /* 自製滾動條 */
+  .scrollbar {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: black;
+    width: 20px;
+    opacity: .5;
+  }
+
+  .scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background-color: white;
+  }
+</style>
+<div id="app">
+  <div class="box"></div>
+</div>
+<div class="scrollbar">
+  <div class="scrollbar-thumb"></div>
+</div>
+<script>
+  const scrollbar = document.querySelector('.scrollbar')
+  const thumb = document.querySelector('.scrollbar-thumb')
+
+  function updateScrollbar() {
+    const documentHeight = document.documentElement.scrollHeight
+    const viewportHeight = window.innerHeight
+    const scrollTop = window.pageYOffset
+    const thumbHeight = thumb.clientHeight
+    const scrollbarHeight = scrollbar.clientHeight
+
+    const maxThumbTop = scrollbarHeight - thumbHeight // 滾動條有多少可以滾
+    const maxScroll = documentHeight - viewportHeight // 頁面有多少可以滾
+    const scrollPercentage = scrollTop / maxScroll    // 當前頁面滾了多少比例
+    const thumbTop = scrollPercentage * maxThumbTop   // 滾動條就需要移動多少比例
+
+    thumb.style.top = thumbTop + 'px'
+  }
+
+  window.addEventListener('scroll', updateScrollbar)
+  window.addEventListener('resize', updateScrollbar)
+
+  updateScrollbar()
+</script>

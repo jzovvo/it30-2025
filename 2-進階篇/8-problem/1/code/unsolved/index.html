@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 200vh;
+    }
+
+    .app {
+      position: relative;
+      padding-top: calc(90 / 1440 * 100vw);
+      padding-bottom: calc(55 / 1440 * 100vw);
+      background-color: #000;
+      min-height: 100vh;
+      min-height: 100dvh;
+      opacity: .7;
+    }
+
+    .content {
+      width: calc(1000 / 1440 * 100vw);
+      height: calc(300 / 1440 * 100vw);
+      margin: auto;
+      background-color: #E9661A;
+    }
+
+    .cir {
+      position: absolute;
+      width: calc(40 / 1440 * 100vw);
+      height: calc(40 / 1440 * 100vw);
+      top: calc(40 / 1440 * 100vw);
+      right: calc(40 / 1440 * 100vw);
+      background-color: #E9661A;
+      border-radius: 50%;
+    }
+  </style>
+  <div class="app">
+    <div class="content"></div>
+    <div class="cir"></div>
+  </div>
+</body>
+</html>
