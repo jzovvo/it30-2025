@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+
+    const updateInfo = () => {
+      domInfo.innerHTML = `
+        <p>dpr: ${window.devicePixelRatio}</p>
+        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
+        <p>screen: ${screen.width} x ${screen.height}</p>
+        <p>dpr: ${window.devicePixelRatio}</p>
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>

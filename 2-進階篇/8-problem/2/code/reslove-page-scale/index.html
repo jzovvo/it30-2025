@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --page-zoom: 1;
+    }
+
+    .box {
+      width: calc(50vw * var(--page-zoom)); /** 每個 vw 值都乘上一個縮放比 */
+      font-size: calc(5vw * var(--page-zoom));
+      background-color: chocolate;
+    }
+  </style>
+  <div class="box">vw</div>
+  <script>
+    // 當 devicePixelRatio 數值變動時，就去更新該縮放比
+    const deviceDPR = 2
+    const update = () => {
+
+      document.documentElement.style.setProperty(
+        '--page-zoom',
+        window.devicePixelRatio / deviceDPR
+      )
+      update.remove?.()
+      const media = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+      media.addEventListener('change', update)
+      update.remove = () => media.removeEventListener('change', update)
+    }
+
+    update()
+  </script>
+</body>
+</html>

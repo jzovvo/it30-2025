@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .vw {
+      width: 50vw;
+      font-size: 5vw;
+      background-color: chocolate;
+    }
+  </style>
+  <div class="vw">vw</div>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domVw = document.querySelector('.vw')
+
+    const updateInfo = () => {
+      const styleInfo = getComputedStyle(domVw)
+      domInfo.innerHTML = `
+        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
+        <p>text: ${styleInfo.fontSize}</p>
+        <p>vw: ${styleInfo.width} x ${styleInfo.height}</p>
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>

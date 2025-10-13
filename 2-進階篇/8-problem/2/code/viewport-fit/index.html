@@ -1,0 +1,53 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=contain"> -->
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=auto"> -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  .target {
+    position: fixed;
+    top: env(safe-area-inset-top);
+    left: env(safe-area-inset-left);
+    right: env(safe-area-inset-right);
+    bottom: env(safe-area-inset-bottom);
+    background-color: skyblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  h3 {
+    text-align: center;
+  }
+</style>
+<div class="target">
+  <div class="info"></div>
+</div>
+<script>
+  const domTarget = document.querySelector('.target')
+  const domInfo = document.querySelector('.info')
+  const updateInfo = () => {
+    const divStyle = getComputedStyle(domTarget)
+    domInfo.innerHTML =
+      '<h3>cover</h3>' +
+      // '<h3>contain</h3>' +
+      // '<h3>auto</h3>' +
+    `
+      top: ${divStyle.top}<br/>
+      bottom: ${divStyle.bottom}<br/>
+      left: ${divStyle.left}<br/>
+      right: ${divStyle.right}<br/>
+      w x h: ${divStyle.width} x ${divStyle.height}<br/>
+      viewport: ${window.innerWidth} x ${window.innerHeight}
+    `
+  }
+
+  const repeat = () => {
+    updateInfo()
+    requestAnimationFrame(repeat)
+  }
+
+  repeat()
+</script>

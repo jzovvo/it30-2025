@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      overflow-x: hidden;
+    }
+    body {
+      height: 200vh;
+    }
+    .full-screen {
+      position: absolute;
+      width: 100vw;
+      height: 100dvh;
+    }
+  </style>
+  <div class="full-screen"></div>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domWScreen = document.querySelector('.full-screen')
+
+    const updateInfo = () => {
+      domInfo.innerHTML = `
+        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
+        <p>vw/vh: ${getComputedStyle(domWScreen).width} x ${getComputedStyle(domWScreen).height}</p>
+        <p>vv scale: ${visualViewport?.scale || undefined}</p>
+        <p>vv size: ${visualViewport?.width || undefined} x ${visualViewport?.height || undefined}</p>
+        <p>html: ${document.documentElement.clientWidth} x ${document.documentElement.clientHeight}</p>
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>
