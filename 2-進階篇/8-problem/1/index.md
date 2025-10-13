@@ -345,5 +345,5 @@ MDN 對於 `fixed` 的說明：
 
 - [mdn - fixed](https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed)
 - [mdn - 改變 fixed 的祖先元素](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Containing_block#identifying_the_containing_block)
-- [煉金術師的精密測繪](../../7-vw進階知識/1/index.md)
+- [煉金術師的精密測繪：vw 家族的尺寸之謎](../../7-vw進階知識/1/index.md)
 - [用等比縮放達到我心中的 pixel perfect](../../../0-first/index.md)
