@@ -3,36 +3,44 @@
 `vw` 有個難解的問題：在**桌機**瀏覽器縮放時，`vw` 在視覺上完全不會跟著縮放。
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-  .vw {
-    width: 10vw;
-    height: 10vw;
-    background-color: cadetblue;
-  }
+    .vw {
+      width: 10vw;
+      height: 10vw;
+      background-color: cadetblue;
+    }
 
-  .px {
-    width: 10px;
-    height: 10px;
-    background-color: chocolate;
-  }
-</style>
-<div class="vw"></div>
-<div class="px"></div>
+    .px {
+      width: 10px;
+      height: 10px;
+      background-color: chocolate;
+    }
+  </style>
+  <div class="vw"></div>
+  <div class="px"></div>
+</body>
+</html>
 ```
 
 **桌機結果**
 
-![](./assets/vw-desktop-no-scale.gif)
+![](./assets/problem-vw-zoom-desktop.gif)
 
 **手機結果**
 
-![](./assets/vw-mobile-scale.gif)
+![](./assets/problem-vw-zoom-mobile.gif)
 
 - 桌機瀏覽器進行縮放時，視覺上只有 `px` 有變動，`vw` 沒有任何變動。
 - 手機瀏覽器進行縮放時，不管是 `px` 還是 `vw` 都有所變動。
@@ -55,7 +63,7 @@ pixel 主要分成 **「Device Pixel」** 與 **「Logical Pixel」**：
 
 #### Logical Pixel（邏輯像素）
 
-![](./assets/logic-pixel.png)
+![](./assets/logical-pixel.png)
 
 設備像素是無法改變的，但在作業系統設定中卻可以設定解析度，這個設定改變了什麼？
 
@@ -63,50 +71,91 @@ pixel 主要分成 **「Device Pixel」** 與 **「Logical Pixel」**：
 
 此時會出現一個疑問，要怎麼在每個螢幕燈只能亮一種顏色的情況下，渲染非 1:1 的尺寸畫面？
 
-這題的底層邏輯相當複雜，我只能簡單說一下過程：在決定畫面尺寸後，系統就會交給 GPU 去處理繪製，而 GPU 會為此做幾件事：
+在決定畫面尺寸後，系統就會交給 GPU 去處理繪製，GPU 會做**影像重採樣 (Image Resampling)**：估算每個設備像素應該顯示的最終顏色，估算過程會透過**插值 (Interpolation)** 演算法來完成。
 
-- `Sampling`：
-  將系統想要渲染的圖片尺寸縮放至與設備相同，放大叫做 `Upsampling`，縮小叫做 `Downsampling`。
+- `Image Resampling`：
+  將系統想要渲染的畫布尺寸縮放至與實體解析度相同，放大叫 `Upsampling`，縮小叫 `Downsampling`。
 - `Interpolation`：
-  圖片尺寸可能無法完美對應設備像素，也就是每個燈的範圍可能涵蓋多個顏色，此時 GPU 會使用 `Interpolation` 算法來決定最終每個燈應該渲染什麼顏色，簡單說就是參考該像素附近的像素顏色做加權平均。
+  縮放的過程中，畫布尺寸可能無法完美對應設備像素，也就是每個燈可能涵蓋多個顏色，此時 GPU 會使用 `Interpolation` 算法來決定最終每個燈應該渲染什麼顏色，簡單說就是參考該邏輯像素附近的像素顏色做加權平均。
 
-在處理過後，就能明確決定每個像素燈所需顯示的顏色來顯示畫面。
+在處理過後，就能明確決定每個燈所需顯示的顏色來顯示畫面。
 
-也就是說**使用者可以選擇邏輯解析度來決定一個邏輯像素的大小**。
+也就是說**邏輯像素是一個可縮放的像素單位，可以選擇邏輯解析度來決定系統的邏輯像素大小**，在不同系統中對邏輯像素有不同的具體實作：
 
-#### DPR（Device Pixel Ratio）
+- Windows 使用 dip（Device Independent Pixel）。
+- Apple 使用 pt（Point）。
+- Web 使用 px（**Css Pixel**）。
+
+#### Scale Factor
 
 現代的螢幕 PPI 是以前的好幾倍：
 
 - 如果畫面維持 1:1 的映射，內容會變得超小。
-- 如果邏輯解析度調小，那 `Sampling` 時就會把圖片拉大，此時畫面就容易糊掉。
+- 如果邏輯解析度調小，那 `Image Resampling` 時就需要把畫布放大，此時畫面就容易糊掉。
 
-因此作業系統會為不同邏輯解析度設定一個畫面縮放比，該縮放比就是 DPR，也就是設定了邏輯解析度後，最終系統決定要繪製的畫面尺寸還會乘上這個 DPR 的值，以我的電腦為例：
+因此作業系統會為不同邏輯解析度設定一個畫面縮放比，設定邏輯解析度後，最終系統繪製的畫布尺寸還會乘上 Scale Factor，以我的 mac 為例：
 
-- 邏輯解析度設定為 1800x1169 以下的 DPR 都是 2（HiDPI），也就是最終要渲染的畫布尺寸會是這個比例再乘上 2。
+- 邏輯解析度設定為 1800x1169 以下的 Scale Factor 都是 2（HiDPI），也就是最終要渲染的畫布尺寸會是這個比例再乘上 2。
 - 因為我的螢幕實體解析度為 3024x1964，所以系統建議的解析度是 1512x982，這個尺寸乘上 2 就會與實體解析度相同，不用作任何縮放處理，性能與效果是最好的。
-- 超過 1800x1169 的 DPR 都是 1（LoDPI），因為乘 2 後會超出硬體性能設定的閾值，為了維持系統流暢性與穩定性而降低 DPR。
+- 超過 1800x1169 的 Scale Factor 都是 1（LoDPI），因為乘 2 後會超出硬體性能設定的閾值，系統會為了維持流暢與穩定而降低 Scale Factor。
 
-另外，window 系統顯示縮放百分比也會直接加權在 DPR 的數值上。
+Scale Factor 是一個通用的概念，不同系統對於 Scale Factor 有不同的具體實作：
 
-#### Css Pixel
-
-`Css Pixel` 跟 `Logical Pixel` 是指相同的東西，只是層級不同，`Css Pixel` 指的是在瀏覽器中的 pixel，而 `Logical Pixel` 是一個通用的概念。
-
-在瀏覽器中可以使用：
-
-- `window.screen.width` 與 `window.screen.height` 來獲取當前使用者設置的邏輯解析度（chrome 與 safari）。
-- `window.devicePixelRatio` 來獲取當前瀏覽器的 DPR。
+- Windows 叫做 DPI Scaling，通常以 100%、125% 等百分比呈現。
+- Apple 就叫 Scale Factor，官方文件以 `@1x`、`@2x` 的格式來表示，該數值的具體流程如上所述。
+- Web 叫做 **DPR**（Device Pixel Ratio），可以透過 `window.devicePixelRatio` 來獲取。
 
 ### viewport（視口）
 
-前面不停地提到 `viewport` ，實際上 `viewport` 又可細分為 **「Layout Viewport」** 與 **「Visual Viewport」**：
+在前面不停地提到 `viewport` ，實際上 `viewport` 又可細分為 **「Layout Viewport」** 與 **「Visual Viewport」**：
 
 #### Layout Viewport
 
-桌機時代只有 `viewport` 的概念，在電腦進行縮放時（`Ctrl/Cmd +` 或 `Ctrl/Cmd -`），縮放的原理是直接改變 `Css Pixel` 大小的定義，以我的 `Chrome` 為例：
+桌機時代只有 `viewport` 的概念，電腦進行縮放時（`Ctrl/Cmd +` 或 `Ctrl/Cmd -`），**縮放的原理是直接改變 `Css Pixel` 大小的定義**，以我的 `Chrome` 為例：
 
-![](./assets/scale-desk-pixel.gif)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .text-px {
+      font-size: 100px;
+    }
+  </style>
+  <div class="text-px">hi px :)</div>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domText = document.querySelector('.text-px')
+
+    const updateInfo = () => {
+      domInfo.innerHTML = `
+        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
+        <p>text: ${getComputedStyle(domText).fontSize}</p>
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>
+```
+
+![](./assets/page-zoom.gif)
 
 - 縮放的原理是改變 `Css Pixel` 大小的定義，而瀏覽器尺寸不變，所以 `viewport` 可容納的 pixel 數量就會有所變動。
   - 放大畫面：`viewport` 能裝的 css pixel 變少了。
@@ -116,30 +165,71 @@ pixel 主要分成 **「Device Pixel」** 與 **「Logical Pixel」**：
 - 每次的縮放都會導致頁面需要重排、重繪。
   - `:)` 在放到最大的那次，塞不下而掉下來了。
 
-`viewport` 在手機時代出現變化：`viewport` 後來被拆成「Layout Viewport」與「Visual Viewport」，而 **「Layout Viewport」就是指原本的 `viewport`**。
+`viewport` 在手機時代被拆成「Layout Viewport」與「Visual Viewport」，而 **「Layout Viewport」就是指原本的 `viewport`**。
 
 #### Visual Viewport
 
-在手機版瀏覽器剛出現的年代，大部分網站都只針對電腦瀏覽器做處理，而手機瀏覽器會直接將畫面縮放到手機中，導致畫面超級小，進而導致使用者經常去縮放內容，造成排版亂掉而難以閱讀。
+在手機瀏覽器剛出現的年代，大部分網站都只針對桌機瀏覽器做處理，而手機瀏覽器只能將畫面直接縮放到手機中，導致畫面超級小，進而導致使用者經常去縮放內容，造成排版亂掉而難以閱讀。
 
 因此瀏覽器廠商將排版與顯示分離而出現了「Layout Viewport」與「Visual Viewport」兩個概念：你拿一張超大張的紙放在眼前，中間挖一個洞，此時你只能通過這個洞去看畫面：
 
-![](./assets/white-paper.gif)
+![](./assets/pinch-zoom-principle.gif)
 
 - 畫面就是 `Layout Viewport`。
 - 紙就是 `Visual Viewport`，就是一個取景框。
 
-所以手機縮放不會造成排版有任何的變動，而是**控制取景框（紙）和畫面的遠近關係**：
+因此手機縮放不會造成排版變動，而是**控制取景框（紙）和畫面的遠近關係**：
 
 1. 取景框擷取畫面的一小部分。
-2. GPU 進行影像放大：
-   - 將擷取畫面拉伸到與實體解析度相同。
-   - 使用 `Interpolation` 算法填補像素間的空隙，減少馬賽克產生。
+2. GPU 進行影像重採樣，使其填滿 Visual Viewport 所佔據的實體像素區域。
 3. 繪製顯示。
 
-![](./assets/scale-mob-pixel.gif)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-- 這種縮放稱為 **Pinch Zoom**，它不會改變 `Layout Viewport`，所以縮放讓畫面塞不下也不會造成排版有任何改變。
+    .text-px {
+      font-size: 100px;
+    }
+  </style>
+  <div class="text-px">hi px :)</div>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domText = document.querySelector('.text-px')
+
+    const updateInfo = () => {
+      domInfo.innerHTML = `
+        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
+        <p>vv scale: ${visualViewport?.scale || undefined}</p>
+        <p>text: ${getComputedStyle(domText).fontSize}</p>
+      `
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>
+```
+
+![](./assets/pinch-zoom.gif)
+
+- 這種縮放稱為 **Pinch Zoom**，它不會改變 `Layout Viewport`，所以縮放導致畫面塞不下也不會造成排版有任何改變。
 - w3c 為 `Visual Viewport` 開了一個專用的 API 叫 `visualViewport`，包括 `visualViewport.width`、`visualViewport.height`、`visualViewport.scale` 等當前 `Visual Viewport` 相關資訊。
 
 ## page zoom 無法縮放 vw 的問題
@@ -168,13 +258,40 @@ safari 與非 safari 在幾個數值的計算有著完全不同的理解而造�
 
 這裡的爭執點在於 `current page zoom` 是否包含瀏覽器縮放，從結果來看，大部分瀏覽器廠商都認為包含而將縮放比例加權於 DPR 中，但是 `safari` 認為 `devicePixelRatio` 的「device」應該只反映設備本身的縮放，所以 safari 在 `page zoom` 時，DPR 會保持不變。
 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+
+    const updateInfo = () => {
+      domInfo.innerHTML = window.devicePixelRatio
+    }
+
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
+
+    repeat()
+  </script>
+</body>
+</html>
+```
+
 **chrome**
 
-![](./assets/dpr-chrome.gif)
+![](./assets/problem-dpr-chrome.gif)
 
 **safari**
 
-![](./assets/dpr-safari.gif)
+![](./assets/problem-dpr-safari.gif)
 
 page zoom 縮放時：
 
@@ -246,11 +363,11 @@ W3C 對於 `innerWidth` 與 `innerHeight` 的規範為「包含滾動條寬度�
 
 **chrome 選擇 `Layout Viewport`**
 
-![](./assets/pinch-zoom-chrome.gif)
+![](./assets/problem-pinch-zoom-chrome.gif)
 
 **safari 選擇 `Visual Viewport`**
 
-![](./assets/pinch-zoom-safari.gif)
+![](./assets/problem-pinch-zoom-safari.gif)
 
 在 pinch zoom 時：
 
@@ -312,17 +429,17 @@ W3C 對於 `innerWidth` 與 `innerHeight` 的規範為「包含滾動條寬度�
 
 **chrome**
 
-![](./assets/vw-scale-chrome.gif)
+![](./assets/problem-vw-fontsize-chrome.gif)
 
 **safari**
 
-![](./assets/vw-scale-safari.gif)
+![](./assets/problem-vw-fontsize-safari.gif)
 
-- chrome 的數值一切正常，當 viewport 因為 page zoom 放大兩倍而導致其 pixel 數值縮小兩倍時，`width`、`height`、`font-size` 都跟著 viewport pixel 數值變少而縮小了兩倍。
-- safari 的 `width` 跟 `height` 也隨著 viewport 減少兩倍。
-- 但是 **safari 的 `font-size` 數值不會隨著 viewport 因為縮放變動而變動**，此時的計算結果就是錯的：
+- chrome 的數值一切正常，當 viewport 因為 page zoom 放大兩倍而導致其 pixel 數值縮小兩倍時，`width`、`height`、`font-size` 都跟著 viewport pixel 數值變少而縮小兩倍。
+- safari 的 `width` 跟 `height` 也隨著 viewport 縮小兩倍。
+- 但是 **safari 的 `font-size` 數值不會因為 viewport 縮放而變動**，此時的計算結果就會是錯的：
   - page zoom 一倍時，font-size 應該為 `574 / 100 * 5 = 28.7px`，數值計算正確。
-  - page zoom 兩倍時，font-size 應該為 `287 / 100 * 5 = 14.35px`，他還是維持 `28.7px`。
+  - page zoom 兩倍時，font-size 應該為 `287 / 100 * 5 = 14.35px`，他卻維持 `28.7px`。
 
 我不確定是不是只有 `font-size`，但 safari 就是有這種情境出現，真是傷腦筋。
 
@@ -332,7 +449,7 @@ W3C 對於 `innerWidth` 與 `innerHeight` 的規範為「包含滾動條寬度�
 
 > Except for captions and images of text, text can be resized without assistive technology up to 200 percent without loss of content or functionality.
 
-瀏覽器達到最大 page zoom 時，字體要能至少放大兩倍，對於縮放不影響視覺大小的 vw 來說，完全是個無法解決的硬傷。
+瀏覽器達到最大 page zoom 時，字體至少要能放大兩倍，對於縮放不影響視覺大小的 vw 來說，完全是個難以解決的硬傷。
 
 以下提出幾個解決方案，但我必須誠實的說，以「目前」瀏覽器縮放對於 page zoom 所暴露的資訊，此問題暫時真的難以完美解決。
 
@@ -393,24 +510,24 @@ W3C 對於 `innerWidth` 與 `innerHeight` 的規範為「包含滾動條寬度�
 
 **chrome**
 
-![](./assets/resolove-page-scale-chrome.gif)
+![](./assets/solution-page-zoom-ratio-chrome.gif)
 
 **safari**
 
-![](./assets/resolove-page-scale-safari.gif)
+![](./assets/solution-page-zoom-ratio-safari.gif)
 
 因為瀏覽器沒有穩定可用的 page zoom 縮放比，而產生兩個問題：
 
-1. 非 safari 系列的瀏覽器將系統跟瀏覽器的縮放比都塞到 DPR 中，所以目前只能「猜測」使用者系統縮放比來瀏覽器 page zoom 縮放比。
+1. 非 safari 系列的瀏覽器將系統跟瀏覽器的縮放比都塞到 DPR 中，所以目前只能「猜測」使用者系統縮放比來獲取瀏覽器 page zoom 縮放比。
 
-   - 以獲取無障礙認證的角度來說，其實不是什麼困難的問題，page zoom 會導致 DPR 更新，所以縮放一定會有效果。
+   - 以獲取無障礙認證的角度來說，其實沒有任何問題，page zoom 會導致 DPR 更新，所以縮放一定會有效果。
    - 但是以服務使用者的角度來說，這是一個天大的難題，所以我才認為 safari 不將 DPR 混用才是正確的。
 
 2. safari 的 DPR 是靜態的，不會變動。
 
    - 這個問題原本是個難解的問題，但是因為 safari 有 font-size vw 文字會縮放的 bug，所以其實 safari 不用特別解決就能通過 1.4.4 了，算是誤打誤撞的 bug。
 
-未來如果瀏覽器廠商們願意提供穩定可用的 page zoom 縮放比，並且 safari 也修掉這個奇怪的 font-size bug，這個解決方案就真的能完美處理無法縮放的情境了，現在只能成功獲取認證，不算是真的解決 😃
+未來如果瀏覽器廠商們願意提供穩定可用的 page zoom 縮放比，並且 safari 也修掉這個奇怪的 font-size bug，這個解決方案就真的能完美處理 vw 無法隨 page zoom 縮放的困境了，現在只能成功獲取認證，不算是真的解決 😃
 
 ### px 與 vw 混用
 
@@ -429,7 +546,7 @@ W3C 對於 `innerWidth` 與 `innerHeight` 的規範為「包含滾動條寬度�
 > . Turn on text-sizing (e.g. with a bookmarklet).
 > . Un-zoom through each media query, looking for overlaps / missing content.
 
-我們只關心文字縮放的部分：他希望將 1280px 寬的 viewport 放大四倍時，字體至少能放大兩倍，假設我的 `font-size` 為 60px，原本的數值應該是 `calc(60 / 1280 * 100vw)`，此時改為混用的計算過程為：
+我們只關心文字縮放的部分：他希望在 1280px 寬的 viewport 放大四倍時，字體至少能放大兩倍，假設我的 `font-size` 為 60px，原本的數值應該是 `calc(60 / 1280 * 100vw)`，此時改為混用的計算過程為：
 
 ```text
 . x 為 vw 要算出來的 px 值
@@ -449,59 +566,68 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 **程式碼**
 
 ```html
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-  body {
-    font-size: calc(calc(40 / 1280 * 100vw) + 20px); /** <- */
-  }
+    body {
+      font-size: calc(calc(40 / 1280 * 100vw) + 20px); /** <- */
+    }
 
-  .target {
-    width: max-content;
-    background-color: chocolate;
-  }
+    .target {
+      width: max-content;
+      background-color: chocolate;
+    }
 
-  .rule1 {
-    background-color: red;
-  }
+    .rule1 {
+      background-color: red;
+    }
 
-  .rule2 {
-    background-color: blue;
-  }
-</style>
-<div class="target">hi</div>
-<div class="rule1"></div>
-<div class="rule2"></div>
-<div id="info"></div>
-<script>
-  const domInfo = document.querySelector('#info')
-  const domRule1 = document.querySelector('.rule1')
-  const domRule2 = document.querySelector('.rule2')
-  const domTarget = document.querySelector('.target')
+    .rule2 {
+      background-color: blue;
+    }
+  </style>
+  <div class="target">hi</div>
+  <div class="rule1"></div>
+  <div class="rule2"></div>
+  <div id="info"></div>
+  <script>
+    const domInfo = document.querySelector('#info')
+    const domRule1 = document.querySelector('.rule1')
+    const domRule2 = document.querySelector('.rule2')
+    const domTarget = document.querySelector('.target')
 
-  const init = () => {
-    const targetStyle = getComputedStyle(domTarget)
-    const targetWidth = Number.parseFloat(targetStyle.width)
-    const targetHeight = Number.parseFloat(targetStyle.height)
+    const init = () => {
+      const targetStyle = getComputedStyle(domTarget)
+      const targetWidth = Number.parseFloat(targetStyle.width)
+      const targetHeight = Number.parseFloat(targetStyle.height)
 
-    domRule1.style.width = `calc(${targetWidth} / 1280 * 100vw)`
-    domRule1.style.height = `calc(${targetHeight} / 1280 * 100vw)`
-    domRule2.style.width = `calc(${targetWidth * 2} / 1280 * 100vw)`
-    domRule2.style.height = `calc(${targetHeight * 2} / 1280 * 100vw)`
-  }
+      domRule1.style.width = `calc(${targetWidth} / 1280 * 100vw)`
+      domRule1.style.height = `calc(${targetHeight} / 1280 * 100vw)`
+      domRule2.style.width = `calc(${targetWidth * 2} / 1280 * 100vw)`
+      domRule2.style.height = `calc(${targetHeight * 2} / 1280 * 100vw)`
+    }
 
-  init()
-</script>
+    init()
+  </script>
+</body>
+</html>
 ```
 
 **結果**
 
-![](./assets/vwpx.gif)
+![](./assets/solution-page-zoom-vwpx.gif)
 
-- 利用 vw 在縮放時視覺上不會有變動的特性來當比例尺，準備了用來測量 `.target` 大小的一倍尺與兩倍尺。
+- 利用 vw 在縮放時視覺上不會有變動的特性來當比例尺，準備了測量 `.target` 大小的一倍尺與兩倍尺。
 - 在 page zoom 放大到四倍時，`.target` 大小剛好等於兩倍。
 
 以這種方式解決有幾個問題：
@@ -512,15 +638,15 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 
 ### 客製網站或是不解決
 
-在瀏覽器沒有提供足夠的開發環境讓我們完美解決 page zoom 縮放之前，我不覺得應該為了非主要客群的需求而降低主要客群的使用體驗，加上目前大部分使用網站都是以手機為大宗的市場現況下，會需要 page zoom 的比例應該不高，大部分縮放都是觸發 pinch zoom，所以不解決所影響的使用範圍真的非常小眾。
+在瀏覽器沒有提供足夠的開發環境讓我們完美解決 page zoom 縮放之前，我覺得不應該為了非主要客群的需求而降低主要客群的使用體驗，加上目前大部分使用網站都是以手機為大宗的市場現況下，會需要 page zoom 的比例應該不高，大部分縮放都是觸發 pinch zoom，所以不解決所影響的使用範圍真的非常小眾。
 
-如果真的要解決，目前最佳的處理方式應該是為需要用 page zoom 的客群客製一份 pixel 為主體的新網站，如果覺得成本太高，並且乘上縮放比也無法滿足他們的需求，那也只能放棄這個市場需求了。
+如果真的要解決，目前最佳的處理方式應該是客製一份 pixel 為主體的新網站來服務需要 page zoom 的客群，如果覺得成本太高，並且乘上縮放比也無法滿足他們的需求，那也只能放棄這個市場需求了。
 
 ## 補充說明
 
 ### DPI (Dots Per Inch)
 
-所謂 DPI 指的是每英吋墨點數，衡量「印表機」每英吋可以在紙上噴多少個**墨點**，跟 PPI 的概念很像，但是 PPI 是用於衡量螢幕的像素。
+所謂 DPI 指的是每英吋墨點數，用來衡量「印表機」每英吋可以在紙上噴多少個**墨點**，跟 PPI 的概念很像，但是 PPI 是用於衡量螢幕的像素。
 
 但是後來這兩個單位經常被混用。
 
@@ -532,7 +658,7 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 
 早期手機剛出的年代，為了將網頁內容放到手機中，手機瀏覽器將 `Layout Viewport` 設定為 980px 寬的畫面，然後縮放至頁面中。
 
-![](./assets/no-meta-width.png)
+![](./assets/no-meta-viewport-width.png)
 
 - 明明是 375 x 667，但是獲取到的 viewport 為 980 x 1743。
 - 高度是隨著視窗寬度等比例決定（`980 / 375 * 667 = 1743`）。
@@ -548,7 +674,7 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 #### visualViewport.scale 相關
 
 - `initial-scale`：
-  - 畫面開啟時，最初的 `visualViewport.scale` 倍數。
+  - 畫面開啟時，`visualViewport.scale` 的初始值。
   - 0.1 ~ 10.0。
 - `minimum-scale`：
   - `visualViewport.scale` 最小可縮放倍數。
@@ -575,66 +701,74 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 **程式碼**
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=contain"> -->
-<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=auto"> -->
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  .target {
-    position: fixed;
-    top: env(safe-area-inset-top);
-    left: env(safe-area-inset-left);
-    right: env(safe-area-inset-right);
-    bottom: env(safe-area-inset-bottom);
-    background-color: skyblue;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  h3 {
-    text-align: center;
-  }
-</style>
-<div class="target">
-  <div class="info"></div>
-</div>
-<script>
-  const domTarget = document.querySelector('.target')
-  const domInfo = document.querySelector('.info')
-  const updateInfo = () => {
-    const divStyle = getComputedStyle(domTarget)
-    domInfo.innerHTML =
-      '<h3>cover</h3>' +
-      // '<h3>contain</h3>' +
-      // '<h3>auto</h3>' +
-    `
-      top: ${divStyle.top}<br/>
-      bottom: ${divStyle.bottom}<br/>
-      left: ${divStyle.left}<br/>
-      right: ${divStyle.right}<br/>
-      w x h: ${divStyle.width} x ${divStyle.height}<br/>
-      viewport: ${window.innerWidth} x ${window.innerHeight}
-    `
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=contain"> -->
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=auto"> -->
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .target {
+      position: fixed;
+      top: env(safe-area-inset-top);
+      left: env(safe-area-inset-left);
+      right: env(safe-area-inset-right);
+      bottom: env(safe-area-inset-bottom);
+      background-color: skyblue;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h3 {
+      text-align: center;
+    }
+  </style>
+  <div class="target">
+    <div class="info"></div>
+  </div>
+  <script>
+    const domTarget = document.querySelector('.target')
+    const domInfo = document.querySelector('.info')
+    const updateInfo = () => {
+      const divStyle = getComputedStyle(domTarget)
+      domInfo.innerHTML =
+        '<h3>cover</h3>' +
+        // '<h3>contain</h3>' +
+        // '<h3>auto</h3>' +
+      `
+        top: ${divStyle.top}<br/>
+        bottom: ${divStyle.bottom}<br/>
+        left: ${divStyle.left}<br/>
+        right: ${divStyle.right}<br/>
+        w x h: ${divStyle.width} x ${divStyle.height}<br/>
+        viewport: ${window.innerWidth} x ${window.innerHeight}
+      `
+    }
 
-  const repeat = () => {
-    updateInfo()
-    requestAnimationFrame(repeat)
-  }
+    const repeat = () => {
+      updateInfo()
+      requestAnimationFrame(repeat)
+    }
 
-  repeat()
-</script>
+    repeat()
+  </script>
+</body>
+</html>
 ```
 
 **結果**
 
 ![](./assets/viewport-fit.png)
 
-因為這支手機最下面點到會觸發其他功能，造成不同 `viewport-fit` 的結果不同：
+因為這支手機點到最下面會觸發其他功能，造成不同 `viewport-fit` 的結果不同：
 
 - `contain` 的結果比 `cover` 小，因為他的 viewport 不包含手機會觸發其他功能的部分。
 - `cover` 是包含的，所以他的 `viewport` 比較大，並且 `bottom: env(safe-area-inset-bottom)` 也有獲取到帶功能部分的大小，所以 `.target` 有避開該部分。
@@ -647,13 +781,19 @@ x + 4y = 60 * 2 # 放大四倍時，數值要至少兩倍大。
 - `resizes-visual`：
   - 修改 `visual-viewport` 的值。
   - 也就是在取景框的下面遮上一張紙，並不會影響排版本身，所以 `vh` 家族的值不會改變。
-    ![](./assets/keyboard.gif)
+    ![](./assets/interactive-widget-resizes-visual.gif)
 - `resizes-content`：
   - 修改 `viewport` 的值。
   - 這裡指的 `viewport` 就是 `Layout Viewport`，所以 `vh` 家族的值會被影響。
 - `overlays-content`：
   - 直接將虛擬鍵盤放在 `visual-viewport` 的上面一層，既不影響排版，也不影響取景框。
   - 這個設定的用途在於讓你利用 `VirtualKeyboard API` 來自己操作虛擬鍵盤的相關排版影響。
+
+### Mac 觸控板縮放
+
+不是只有手機能用 pinch zoom，Mac 的觸控板也可以。
+
+![](./assets/pinch-zoom-mac.png)
 
 ## 參考連結
 

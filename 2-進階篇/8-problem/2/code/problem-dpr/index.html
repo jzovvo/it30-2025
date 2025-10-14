@@ -3,30 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
 </head>
 <body>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-
-    .text-px {
-      font-size: 100px;
-    }
-  </style>
-  <div class="text-px">hi px :)</div>
   <div id="info"></div>
   <script>
     const domInfo = document.querySelector('#info')
-    const domText = document.querySelector('.text-px')
 
     const updateInfo = () => {
-      domInfo.innerHTML = `
-        <p>viewport: ${window.innerWidth} x ${window.innerHeight}</p>
-        <p>text: ${getComputedStyle(domText).fontSize}</p>
-      `
+      domInfo.innerHTML = window.devicePixelRatio
     }
 
     const repeat = () => {
