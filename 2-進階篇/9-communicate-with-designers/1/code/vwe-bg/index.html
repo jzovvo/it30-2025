@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      height: min(calc(511 / 375 * 100vw), 511px);
+    }
+
+    .box1 {
+      background: center / cover url(./assets/375.png);
+    }
+
+    .box2 {
+      background: center / cover url(./assets/767.png);
+    }
+  </style>
+  <div class="box box1"></div>
+  <div class="box box2"></div>
+</body>
+</html>
